@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# === Installing ===
+#
+#   $ cp -i srvbak.cron.sample /etc/cron.daily/srvbak
+#   $ vim /etc/cron.daily/srvbak
+#   $ chmod +x /etc/cron.daily/srvbak
+#
+# --
+
+/path/to/srvbak /path/to/srvbakrc
+
+# --

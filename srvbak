@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# --                                                            ; {{{1
+#
+# File        : srvbak
+# Maintainer  : Felix C. Stegerman <flx@obfusk.net>
+# Date        : 2013-03-11
+#
+# Copyright   : Copyright (C) 2013  Felix C. Stegerman
+# Licence     : GPLv2
+#
+# --                                                            ; }}}1
+
+source "$1"
+
+date="$( date +'%FT%T' )"
+
+function run () { echo "==> $@"; "$@"; echo; }
+function run_multi () { local x; for x in "$@"; do run $x; done; }
+
+function pg_backup ()
+{                                                               # {{{1
+  local dbname="$1"
+  local dump="$base_dir"/postgresql/"$dbname-$date".sql
+
+  echo "==> pg_dump $dbname > $dump"
+  pg_dump "$dbname" > "$dump"
+  echo
+}                                                               # }}}1
+
+function data_backup ()
+{                                                               # {{{1
+  local dir="$1"
+  local to="$base_dir"/data/"$dir"/"$date"
+
+  mkdir -p "$to"
+  run rsync -a --delete "$dir"/ "$to"/
+}                                                               # }}}1
+
+# --
+
+# 1. stop services
+run_multi "${services_stop[@]}"
+
+# 2. baktogit
+[ "${#baktogit_items[@]}" -ne 0 ] && \
+  run "$baktogit" "${baktogit_items[@]}"
+
+# 3. postgresql
+for db in "${postgresql_dbs[@]}"; do pg_backup "$db"; done
+
+# 4. data
+for dir in "${data_dirs[@]}"; do data_backup "$dir"; done
+
+# 5. start services
+run_multi "${services_start[@]}"
+
+# 6. copy backup to remote location(s)
+# ... TODO ...
+
+# vim: set tw=70 sw=2 sts=2 et fdm=marker :
