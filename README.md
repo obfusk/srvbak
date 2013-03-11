@@ -9,7 +9,7 @@
 
 []: }}}1
 
-TODO: TEST!!!
+# TODO: TEST!!!
 
 ## Description
 []: {{{1
@@ -17,9 +17,9 @@ TODO: TEST!!!
   srvbak - server backup (cron job)
 
   srvbak backups configuration files (using baktogit), data, and
-  postgresql databases.  ...
+  databases (currently mongodb and postgresql).  ...
 
-  See srvbakrc.sample and srvbak.cron.sample for examples.
+  See \*.sample for examples.
 
 []: }}}1
 
