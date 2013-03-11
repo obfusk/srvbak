@@ -8,6 +8,7 @@
 #
 # --
 
-/path/to/srvbak /path/to/srvbakrc
+export SUBJECT="backup of $( hostname ) @ $( date +'%F %T' )"
+/path/to/srvbak /path/to/srvbakrc 2>&1 | /path/to/mailer
 
 # --

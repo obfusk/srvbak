@@ -1,0 +1,6 @@
+#!/bin/bash
+
+sendemail -u "$SUBJECT" -s smtp.gmail.com -o tls=yes \
+  -f '<from>' -t '<to>' -xu '<user>' -xp '<pass>'
+
+# --
