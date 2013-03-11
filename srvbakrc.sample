@@ -13,8 +13,12 @@ export BAKTOGIT_REPO="$base_dir"/baktogit BAKTOGIT_PUSH=yes
 baktogit=/path/to/baktogit
 baktogit_items=( /__nap/cfg /etc )
 
+export PGHOST=localhost PGPASSFILE=/path/to/password/file
 postgresql_dbs=( foo bar )
+
+mongo_passfile=/path/to/password/file
 mongo_dbs=( baz qux )
+
 data_dirs=( /__data/files )
 
 # vim: set tw=70 sw=2 sts=2 et fdm=marker :

@@ -11,28 +11,49 @@
 #
 # --                                                            ; }}}1
 
-source "$1"
+source "$1" || exit 1
 
 date="$( date +'%FT%T' )"
 
 function run () { echo "==> $@"; "$@"; echo; }
 function run_multi () { local x; for x in "$@"; do run $x; done; }
 
+function process_mongo_passfile ()
+{                                                               # {{{1
+  local oldifs="$IFS" db user pass
+  IFS=:
+  while read -r db user pass; do
+    [[ "$db" =~ ^[A-Za-z0-9]+$ ]] || exit 1
+    eval "mongo_auth__${db}__user=\$user"
+    eval "mongo_auth__${db}__pass=\$pass"
+  done < "$mongo_passfile"
+  IFS="$oldifs"
+}                                                               # }}}1
+
 function pg_backup ()
 {                                                               # {{{1
   local dbname="$1"
-  local dump="$base_dir"/postgresql/"$dbname-$date".sql
-  local cmd=( pg_dump -h localhost "$dbname" )
+  local dir="$base_dir"/postgresql/"$dbname"
+  local dump="$dir/$date".sql
 
-  echo "==> ${cmd[@]} > $dump"
-  "${cmd[@]}" > "$dump"
-  echo
+  mkdir -p "$dir"
+  run pg_dump "$dbname" -f "$dump" -w
 }                                                               # }}}1
 
 function mongo_backup ()
-{
-  # ... TODO ...
-}
+{                                                               # {{{1
+  local dbname="$1" user pass
+  local dir="$base_dir"/mongodb/"$dbname"
+  local dump="$dir/$date"
+
+  [[ "$dbname" =~ ^[A-Za-z0-9]+$ ]] || exit 1
+  eval "user=\$mongo_auth__${dbname}__user"
+  eval "pass=\$mongo_auth__${dbname}__pass"
+
+  mkdir -p "$dir"
+  echo "$pass" | run mongodump -h "${mongo_host:-localhost}" \
+    -d "$dbname" -u "$user" -p '' -o "$dump"
+}                                                               # }}}1
 
 function data_backup ()
 {                                                               # {{{1
@@ -56,6 +77,7 @@ run_multi "${services_stop[@]}"
 for db in "${postgresql_dbs[@]}"; do pg_backup "$db"; done
 
 # 4. mongodb
+[ -n "$mongo_passfile" ] && process_mongo_passfile
 for db in "${mongo_dbs[@]}"; do mongo_backup "$db"; done
 
 # 5. data

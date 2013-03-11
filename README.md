@@ -9,7 +9,7 @@
 
 []: }}}1
 
-TODO: postgres user, mongodb
+TODO: TEST!!!
 
 ## Description
 []: {{{1
@@ -29,6 +29,8 @@ TODO: postgres user, mongodb
     $ cp -i srvbakrc.sample /path/to/srvbakrc
     $ vim /path/to/srvbakrc
     $ /path/to/srvbak /path/to/srvbakrc
+
+  NB: keep your password files safe!
 
 []: }}}1
 
