@@ -22,11 +22,17 @@ function pg_backup ()
 {                                                               # {{{1
   local dbname="$1"
   local dump="$base_dir"/postgresql/"$dbname-$date".sql
+  local cmd=( pg_dump -h localhost "$dbname" )
 
-  echo "==> pg_dump $dbname > $dump"
-  pg_dump "$dbname" > "$dump"
+  echo "==> ${cmd[@]} > $dump"
+  "${cmd[@]}" > "$dump"
   echo
 }                                                               # }}}1
+
+function mongo_backup ()
+{
+  # ... TODO ...
+}
 
 function data_backup ()
 {                                                               # {{{1
@@ -49,13 +55,16 @@ run_multi "${services_stop[@]}"
 # 3. postgresql
 for db in "${postgresql_dbs[@]}"; do pg_backup "$db"; done
 
-# 4. data
+# 4. mongodb
+for db in "${mongo_dbs[@]}"; do mongo_backup "$db"; done
+
+# 5. data
 for dir in "${data_dirs[@]}"; do data_backup "$dir"; done
 
-# 5. start services
+# 6. start services
 run_multi "${services_start[@]}"
 
-# 6. copy backup to remote location(s)
+# 7. copy backup to remote location(s)
 # ... TODO ...
 
 # vim: set tw=70 sw=2 sts=2 et fdm=marker :
