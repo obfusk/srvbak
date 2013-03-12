@@ -127,7 +127,7 @@ function mongo_backup ()
 }                                                               # }}}1
 
 # Usage: data_backup <dir>
-# rsync directory to $base_dir/data/$hash_of_dir, symlinked from
+# rsync directory to $base_dir/data/hash/$hash_of_dir, symlinked from
 # $base_dir/data/path/$dir.
 # Removes obsolete backups.
 function data_backup ()
@@ -135,7 +135,7 @@ function data_backup ()
   local data="$1"
   local hash="$( hashpath "$data" )"
   local ddir="$base_dir"/data
-  local dir="$ddir/$hash"
+  local dir="$ddir/hash/$hash"
   local to="$dir/$date"
 
   mkdir -p "$dir"
@@ -144,7 +144,7 @@ function data_backup ()
   run rsync -a --delete "$data"/ "$to"/
 
   mkdir -p "$ddir/path/$( dirname "$data" )"
-  run ln -s "$dir" "$ddir/data/path/$data"
+  run ln -s "$dir" "$ddir/path/$data"
 
   rm_obsolete_backups "$dir"
 }                                                               # }}}1

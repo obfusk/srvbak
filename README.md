@@ -12,6 +12,7 @@
 ## TODO
 
   * test!
+  * remove echo in rm!
   * remote sync!
 
 ## Description
