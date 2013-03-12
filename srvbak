@@ -4,7 +4,7 @@
 #
 # File        : srvbak
 # Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-# Date        : 2013-03-11
+# Date        : 2013-03-12
 #
 # Copyright   : Copyright (C) 2013  Felix C. Stegerman
 # Licence     : GPLv2
@@ -51,8 +51,8 @@ function mongo_backup ()
   eval "pass=\$mongo_auth__${dbname}__pass"
 
   mkdir -p "$dir"
-  echo "$pass" | run mongodump -h "${mongo_host:-localhost}" \
-    -d "$dbname" -u "$user" -p '' -o "$dump"
+  echo "$pass" | run mongodump -h "$mongo_host" -d "$dbname" \
+    -u "$user" -p '' -o "$dump"
 }                                                               # }}}1
 
 function data_backup ()
@@ -77,7 +77,7 @@ run_multi "${services_stop[@]}"
 for db in "${postgresql_dbs[@]}"; do pg_backup "$db"; done
 
 # 4. mongodb
-[ -n "$mongo_passfile" ] && process_mongo_passfile
+[ "${#mongo_dbs[@]}" -ne 0 ] && process_mongo_passfile
 for db in "${mongo_dbs[@]}"; do mongo_backup "$db"; done
 
 # 5. data

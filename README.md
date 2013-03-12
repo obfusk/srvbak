@@ -2,7 +2,7 @@
 
     File        : README.md
     Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-    Date        : 2013-03-11
+    Date        : 2013-03-12
 
     Copyright   : Copyright (C) 2013  Felix C. Stegerman
     Version     : 0.0.1
@@ -16,8 +16,8 @@
 
   srvbak - server backup (cron job)
 
-  srvbak backups configuration files (using baktogit), data, and
-  databases (currently mongodb and postgresql).  ...
+  srvbak backups configuration files (using baktogit [2]), data, and
+  databases (currently mongodb and postgresql).
 
   See \*.sample for examples.
 
@@ -46,6 +46,9 @@
 
   [1] GNU General Public License, version 2
   --- http://www.opensource.org/licenses/GPL-2.0
+
+  [2] baktogit
+  --- https://github.com/noxqsgit/baktogit
 
 []: }}}1
 
