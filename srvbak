@@ -51,16 +51,14 @@ function process_mongo_passfile ()
 }                                                               # }}}1
 
 # Usage: ls_backups <dir>
-function ls_backups ()
-{ local dir="$1"; ls "$dir" | grep -E '^[0-9]{4}-'; }
+function ls_backups () { ls "$1" | grep -E '^[0-9]{4}-'; }
 
 # Usage: last_backup <dir>
-function last_backup ()
-{ local dir="$1"; ls_backups | tail -n 1; }
+function last_backup () { ls_backups "$1" | tail -n 1; }
 
 # Usage: obsolete_backups <dir>
 function obsolete_backups ()
-{ local dir="$1"; ls_backups | head -n -"$keep_last"; }
+{ ls_backups "$1" | head -n -"$keep_last"; }
 
 # Usage: cp_last_backup <dir> <path>
 # Copies last backup in <dir> (if one exists) to <path> using hard
@@ -81,7 +79,6 @@ function cp_last_backup ()
 function rm_obsolete_backups ()
 {                                                               # {{{1
   local dir="$1" x
-
   for x in $( obsolete_backups "$dir" ); do
     run echo rm -r "$x"                                         # TODO
   done
