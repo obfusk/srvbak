@@ -32,7 +32,7 @@ function canonpath ()
 # Usage: hashpath <path>
 # SHA1 hash of canonical path.
 function hashpath ()
-{ printf '%s' "$( canonpath "$1" )" | sha1sum; }
+{ printf '%s' "$( canonpath "$1" )" | sha1sum | awk '{print $1}'; }
 
 # --
 
