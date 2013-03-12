@@ -7,15 +7,15 @@ services_start=(
   'service naps start'
 )
 
-base_dir=/__data/srvbak   # backups will be stored in subdirs
-keep_last=14              # keep last 14 backups
+base_dir=/__data/srvbak           # backups will be stored in subdirs
+keep_last=14                      # keep last 14 backups
 
 export BAKTOGIT_REPO="$base_dir"/baktogit BAKTOGIT_PUSH=yes
 baktogit=/path/to/baktogit
 baktogit_items=( /__nap/apps/.apps /__nap/cfg /etc )
 
 export PGHOST=localhost PGPASSFILE=/path/to/password/file
-postgresql_dbs=( db1 db2 )
+postgresql_dbs=( user1:db1 :db2 ) # empty user -> db name
 
 mongo_host=localhost mongo_passfile=/path/to/password/file
 mongo_dbs=( db3 db4 )

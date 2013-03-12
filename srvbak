@@ -89,18 +89,18 @@ function rm_obsolete_backups ()
 
 # --
 
-# Usage: pg_backup <dbname>
+# Usage: pg_backup <dbname> <dbuser>
 # PostgreSQL dump to $base_dir/postgresql/$dbname/$date.sql.
 # Removes obsolete backups.
 # Uses $PG*.
 function pg_backup ()
 {                                                               # {{{1
-  local dbname="$1"
+  local dbname="$1" dbuser="$2"
   local dir="$base_dir/postgresql/$dbname"
   local dump="$dir/$date".sql
 
   mkdir -p "$dir"
-  run pg_dump "$dbname" -f "$dump" -w
+  run pg_dump "$dbname" -f "$dump" -w -U "$dbuser"
 
   rm_obsolete_backups "$dir"
 }                                                               # }}}1
@@ -159,7 +159,10 @@ run_multi "${services_stop[@]}"
   run "$baktogit" "${baktogit_items[@]}"
 
 # 3. postgresql
-for db in "${postgresql_dbs[@]}"; do pg_backup "$db"; done
+for info in "${postgresql_dbs[@]}"; do
+  user="${info%%:*}" db="${info#*:}"
+  pg_backup "$db" "${user:-$db}"
+done
 
 # 4. mongodb
 [ "${#mongo_dbs[@]}" -ne 0 ] && process_mongo_passfile
