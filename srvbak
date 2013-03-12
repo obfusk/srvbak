@@ -141,7 +141,7 @@ function data_backup ()
   run rsync -a --delete "$data"/ "$to"/
 
   mkdir -p "$ddir/path/$( dirname "$data" )"
-  run ln -Ts "$dir" "$ddir/path/$data"
+  [ -e "$ddir/path/$data" ] || run ln -Ts "$dir" "$ddir/path/$data"
 
   rm_obsolete_backups "$dir"
 }                                                               # }}}1
