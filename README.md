@@ -9,15 +9,19 @@
 
 []: }}}1
 
-# TODO: TEST!!!
+## TODO
+
+  * test!
+  * remote sync!
 
 ## Description
 []: {{{1
 
   srvbak - server backup (cron job)
 
-  srvbak backups configuration files (using baktogit [2]), data, and
-  databases (currently mongodb and postgresql).
+  srvbak backups/dumps configuration files (using baktogit [2]), data,
+  and databases (currently mongodb and postgresql); it keeps a
+  specified number of older backups, removing obsolete ones.
 
   See \*.sample for examples.
 

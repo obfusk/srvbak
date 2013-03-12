@@ -8,7 +8,7 @@ services_start=(
 )
 
 base_dir=/__data/srvbak   # backups will be stored in subdirs
-keep_for=14               # keep backups 14 days
+keep_last=14              # keep last 14 backups
 
 export BAKTOGIT_REPO="$base_dir"/baktogit BAKTOGIT_PUSH=yes
 baktogit=/path/to/baktogit
