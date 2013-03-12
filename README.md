@@ -12,6 +12,7 @@
 ## TODO
 
   * test!
+  * fix ls: path !!!
   * remove echo in rm!
   * remote sync!
 
