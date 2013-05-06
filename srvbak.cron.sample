@@ -1,14 +1,8 @@
 #!/bin/sh
 
-# === Installing ===
-#
-#   $ cp -i srvbak.cron.sample /etc/cron.daily/srvbak
-#   $ vim /etc/cron.daily/srvbak
-#   $ chmod +x /etc/cron.daily/srvbak
-#
-# --
-
-export SUBJECT="backup of $( hostname ) @ $( date +'%F %T' )"
-/path/to/srvbak /path/to/srvbakrc 2>&1 | /path/to/mailer
+set -e
+export MAILER_SUBJECT="backup of ` hostname ` @ ` date +'%F %T' `"
+/opt/src/srvbak/srvbak.bash /opt/src/srvbak/srvbakrc 2>&1 \
+  | /opt/src/mailer/mailer.bash
 
 # --

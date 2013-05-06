@@ -2,10 +2,10 @@
 
     File        : README.md
     Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-    Date        : 2013-03-12
+    Date        : 2013-05-06
 
     Copyright   : Copyright (C) 2013  Felix C. Stegerman
-    Version     : 0.0.1
+    Version     : 0.0.2
 
 []: }}}1
 
@@ -21,9 +21,15 @@
 
   srvbak - server backup (cron job)
 
-  srvbak backups/dumps configuration files (using baktogit [2]), data,
-  and databases (currently mongodb and postgresql); it keeps a
-  specified number of older backups, removing obsolete ones.
+  srvbak.bash backups/dumps configuration files (using baktogit [2]),
+  data (incrementally, using cp -l and rsync), and databases
+  (currently mongodb and postgresql).  It keeps a specified number of
+  older backups, removing obsolete ones.  Services can be stopped and
+  restarted if needed.  The cron job runs srvbak, sending a report per
+  email using mailer [3].
+
+  A cron job on another server can regularly copy the backups to e.g.
+  a NAS, using rsync and ssh.
 
   See \*.sample for examples.
 
@@ -32,11 +38,24 @@
 ## Usage
 []: {{{1
 
-    $ cp -i srvbakrc.sample /path/to/srvbakrc
-    $ vim /path/to/srvbakrc
-    $ /path/to/srvbak /path/to/srvbakrc
+### Install
 
-  NB: keep your password files safe!
+    $ mkdir -p /opt/src
+    $ git clone https://github.com/noxqsgit/srvbak.git /opt/src/srvbak
+    $ cp -i /opt/src/srvbak/srvbakrc{.sample,}
+    $ vim /opt/src/srvbak/srvbakrc
+
+### Run
+
+    $ /opt/src/srvbak/srvbak.bash /opt/src/srvbak/srvbakrc
+
+### Cron
+
+  First, install mailer [2].
+
+    $ cp -i /opt/src/srvbak/srvbak.cron.sample /etc/cron.daily/srvbak
+    $ vim /etc/cron.daily/srvbak
+    $ chmod +x /etc/cron.daily/srvbak
 
 []: }}}1
 
@@ -55,6 +74,9 @@
 
   [2] baktogit
   --- https://github.com/noxqsgit/baktogit
+
+  [3] mailer
+  --- https://github.com/noxqsgit/mailer
 
 []: }}}1
 
