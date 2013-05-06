@@ -26,6 +26,7 @@ for x in "$1" /etc/srvbakrc /opt/src/srvbak/srvbakrc; do
 done
 
 [ -z "$rc" ] && die 'no srvbakrc' ; source "$rc"
+if [[ "$VERBOSE" == [Yy]* ]]; then verbose=-v; else verbose=; fi
 
 # --
 
@@ -113,7 +114,7 @@ function data_backup ()
 
   mkdir -p "$hdir"
   cp_last_backup "$hdir" "$to"
-  run rsync -av --delete "$path"/ "$to"/
+  run rsync -a $verbose --delete "$path"/ "$to"/
   mkdir -p "$pdir_up"
   [ -e "$pdir" ] || run ln -Ts "$hdir" "$pdir"
   rm_obsolete_backups "$hdir"

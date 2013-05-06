@@ -1,5 +1,7 @@
 #!/bin/bash
 
+VERBOSE=yes                       # can also be exported in ENV
+
 before=( 'service nap stop'  )    # commands to run before
  after=( 'service nap start' )    # commands to run after
 

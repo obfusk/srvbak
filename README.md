@@ -47,7 +47,7 @@
     $ cp -i /opt/src/srvbak/srvbakrc{.sample,}
     $ vim /opt/src/srvbak/srvbakrc
 
-### Usage
+### Run
 
   If no argument is given, searches for /etc/srvbakrc or
   /opt/src/srvbak/srvbakrc.
