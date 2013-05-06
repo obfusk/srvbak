@@ -1,25 +1,23 @@
 #!/bin/bash
 
-services_stop=(
-  'service naps stop'
-)
-services_start=(
-  'service naps start'
-)
+before=( 'service nap stop'  )    # commands to run before
+ after=( 'service nap start' )    # commands to run after
 
 base_dir=/__data/srvbak           # backups will be stored in subdirs
 keep_last=14                      # keep last 14 backups
 
-export BAKTOGIT_REPO="$base_dir"/baktogit BAKTOGIT_PUSH=yes
-baktogit=/path/to/baktogit
-baktogit_items=( /__nap/apps/.apps /__nap/cfg /etc )
+export BAKTOGIT_REPO="$base_dir"/baktogit BAKTOGIT_PUSH=no
+baktogit=/opt/src/baktogit/baktogit.bash
+baktogit_items=( /__nap/apps/.apps /__nap/cfg )
+                                  # /etc w/o etckeeper here
 
-export PGHOST=localhost PGPASSFILE=/path/to/password/file
-postgresql_dbs=( user1:db1 :db2 ) # empty user -> db name
+data_dirs=( /__data/files /__nap /etc )
+                                  # /etc w/ etckeeper here
 
-mongo_host=localhost mongo_passfile=/path/to/password/file
+export PGHOST=localhost PGPASSFILE=/opt/src/srvbak/pgpass
+postgresql_dbs=( user1:db1 :db2 ) # :foo <=> foo:foo
+
+mongo_host=localhost mongo_passfile=/opt/src/srvbak/mongopass
 mongo_dbs=( db3 db4 )
-
-data_dirs=( /__data/files /__nap )
 
 # vim: set tw=70 sw=2 sts=2 et fdm=marker :

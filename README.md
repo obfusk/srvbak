@@ -12,7 +12,6 @@
 ## TODO
 
   * test!
-  * fix ls: path !!!
   * remove echo in rm!
   * remote sync!
 
@@ -23,13 +22,16 @@
 
   srvbak.bash backups/dumps configuration files (using baktogit [2]),
   data (incrementally, using cp -l and rsync), and databases
-  (currently mongodb and postgresql).  It keeps a specified number of
+  (currently postgresql and mongodb).  It keeps a specified number of
   older backups, removing obsolete ones.  Services can be stopped and
   restarted if needed.  The cron job runs srvbak, sending a report per
   email using mailer [3].
 
   A cron job on another server can regularly copy the backups to e.g.
   a NAS, using rsync and ssh.
+
+  NB: when using baktogit, just set it up first, then let srvbak use
+  it.
 
   See \*.sample for examples.
 
@@ -45,9 +47,12 @@
     $ cp -i /opt/src/srvbak/srvbakrc{.sample,}
     $ vim /opt/src/srvbak/srvbakrc
 
-### Run
+### Usage
 
-    $ /opt/src/srvbak/srvbak.bash /opt/src/srvbak/srvbakrc
+  If no argument is given, searches for /etc/srvbakrc or
+  /opt/src/srvbak/srvbakrc.
+
+    $ /opt/src/srvbak/srvbak.bash [ /opt/src/srvbak/srvbakrc ]
 
 ### Cron
 
