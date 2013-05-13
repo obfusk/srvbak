@@ -2,18 +2,24 @@
 
     File        : README.md
     Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-    Date        : 2013-05-06
+    Date        : 2013-05-13
 
     Copyright   : Copyright (C) 2013  Felix C. Stegerman
-    Version     : 0.0.2
+    Version     : 0.0.3
 
 []: }}}1
 
 ## TODO
 
+  * finish gpg/tar/sensitive data !!!
+
+#
+
   * test!
   * remove echo in rm!
-  * remote sync!
+  * remote sync! --> cpbak
+  * rsync/tar exclude
+  * options to not use gpg?!
 
 ## Description
 []: {{{1
@@ -27,8 +33,10 @@
   restarted if needed.  The cron job runs srvbak, sending a report per
   email using mailer [3].
 
+  ... TODO ...
   A cron job on another server can regularly copy the backups to e.g.
   a NAS, using rsync and ssh.
+  ... TODO ...
 
   NB: when using baktogit, just set it up first, then let srvbak use
   it.
@@ -49,14 +57,14 @@
 
 ### Run
 
-  If no argument is given, searches for /etc/srvbakrc or
+  If no argument is given, looks for /etc/srvbakrc or
   /opt/src/srvbak/srvbakrc.
 
     $ /opt/src/srvbak/srvbak.bash [ /opt/src/srvbak/srvbakrc ]
 
 ### Cron
 
-  First, install mailer [2].
+  If you want reports per email, install mailer [2].
 
     $ cp -i /opt/src/srvbak/srvbak.cron.sample /etc/cron.daily/srvbak
     $ vim /etc/cron.daily/srvbak

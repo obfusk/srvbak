@@ -1,10 +1,13 @@
 #!/bin/bash
 
+# TODO: finish gpg/tar/sensitive data !!!
+exit 1
+
 # --                                                            ; {{{1
 #
 # File        : srvbak.bash
 # Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-# Date        : 2013-05-06
+# Date        : 2013-05-13
 #
 # Copyright   : Copyright (C) 2013  Felix C. Stegerman
 # Licence     : GPLv2
@@ -18,6 +21,19 @@ export LC_COLLATE=C ; rc= date="$( date +'%FT%T' )" # no spaces!
 
 # Usage: die <msg>
 function die () { echo "$@" 2>&1; exit 1; }
+
+# --
+
+baktogit_items=() data_dir_n=0 sensitive_data_dir_n=0
+
+function baktogit_items () { baktogit_items+=( "$@" ); }
+
+function data_dir ()
+{ eval 'data_dir__'"$data_dir_n"'=( "$@" )'; (( ++data_dir_n )); }
+
+function sensitive_data_dir ()
+{ eval 'sensitive_data_dir__'"$sensitive_data_dir_n"'=( "$@" )'
+  (( ++sensitive_data_dir_n )); }
 
 # --
 
@@ -68,9 +84,8 @@ function obsolete_backups ()
 function cp_last_backup ()
 {                                                               # {{{1
   local dir="$1" path="$2" ; local last="$( last_backup "$dir" )"
-  if [ -n "$last" -a -e "$dir/$last" ]; then
+  [ -n "$last" -a -e "$dir/$last" ] && \
     run cp -alT "$dir/$last" "$path"
-  fi
 }                                                               # }}}1
 
 # Usage: rm_obsolete_backups <dir>
@@ -82,6 +97,16 @@ function rm_obsolete_backups ()
     run echo rm -fr "$dir/$x"                                   # TODO
   done
 }                                                               # }}}1
+
+# --
+
+# Usage: tar_gpg <file> <arg(s)>
+# Uses $gpg_{opts,key}.
+function tar_gpg ()
+{
+  local file="$1"; shift
+  tar c "$@" | gpg "${gpg_opts[@]}" -e -r "$gpg_key" > "$file"
+}
 
 # --
 
@@ -99,13 +124,13 @@ function process_mongo_passfile ()
 
 # --
 
-# Usage: data_backup <dir>
+# Usage: data_backup <dir> [<opt(s)>]
 # rsync directory to $base_dir/data/hash/$hash_of_path/$date,
 # symlinked from $base_dir/data/path/$dir.
 # Hard links last backup (if any); removes obsolete backups.
 function data_backup ()
 {                                                               # {{{1
-  local path="$1" ; local hash="$( hashpath "$path" )"
+  local path="$1" ; shift ; local hash="$( hashpath "$path" )"
   local    ddir="$base_dir"/data
   local pdir_up="$ddir/path/$( dirname "$path" )"
   local    pdir="$ddir/path/$path"
@@ -114,11 +139,18 @@ function data_backup ()
 
   mkdir -p "$hdir"
   cp_last_backup "$hdir" "$to"
-  run rsync -a $verbose --delete "$path"/ "$to"/
+  run rsync -a $verbose --delete "$@" "$path"/ "$to"/
   mkdir -p "$pdir_up"
   [ -e "$pdir" ] || run ln -Ts "$hdir" "$pdir"
   rm_obsolete_backups "$hdir"
 }                                                               # }}}1
+
+# Usage: sensitive_data_backup <dir> [<opt(s)>]
+# ...
+function sensitive_data_backup ()
+{
+  ...
+}
 
 # Usage: pg_backup <dbname> <dbuser>
 # PostgreSQL dump to $base_dir/postgresql/$dbname/$date.sql.
@@ -157,6 +189,8 @@ function mongo_backup ()
 
 # --
 
+echo "srvbak of $( hostname ) @ ${date/T/ }" ; echo
+
 # 1. before
 run_multi "${before[@]}"
 
@@ -165,21 +199,32 @@ run_multi "${before[@]}"
   run "$baktogit" "${baktogit_items[@]}"
 
 # 3. data
-for dir in "${data_dirs[@]}"; do data_backup "$dir"; done
+for (( i = 0; i < data_dir_n; ++i )); do
+  eval 'args=( "${data_dir__'"$i"'[@]}" )'
+  data_backup "${args[@]}"
+done
 
-# 4. postgresql
+# 4. sensitive data
+for (( i = 0; i < sensitive_data_dir_n; ++i )); do
+  eval 'args=( "${sensitive_data_dir__'"$i"'[@]}" )'
+  sensitive_data_backup "${args[@]}"
+done
+
+# 5. postgresql
 for info in "${postgresql_dbs[@]}"; do
   user="${info%%:*}" db="${info#*:}"
   pg_backup "$db" "${user:-$db}"
 done
 
-# 5. mongodb
+# 6. mongodb
 if [ "${#mongo_dbs[@]}" -ne 0 ]; then
   process_mongo_passfile
   for db in "${mongo_dbs[@]}"; do mongo_backup "$db"; done
 fi
 
-# 6. after
+# 7. after
 run_multi "${after[@]}"
+
+echo
 
 # vim: set tw=70 sw=2 sts=2 et fdm=marker :

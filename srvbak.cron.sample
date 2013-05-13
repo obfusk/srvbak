@@ -1,8 +1,8 @@
 #!/bin/sh
 
 set -e
-export MAILER_SUBJECT="backup of ` hostname ` @ ` date +'%F %T' `"
-/opt/src/srvbak/srvbak.bash /opt/src/srvbak/srvbakrc 2>&1 \
-  | /opt/src/mailer/mailer.bash
+export MAILER_SUBJECT="srvbak of ` hostname ` @ ` date +'%F %T' `"
+/opt/src/srvbak/srvbak.bash /opt/src/srvbak/srvbakrc \
+  2>&1 | tee -a /var/log/srvbak.log | /opt/src/mailer/mailer.bash
 
 # --

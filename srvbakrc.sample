@@ -1,23 +1,34 @@
 #!/bin/bash
 
-VERBOSE=yes                       # can also be exported in ENV
+umask 0077
+: ${VERBOSE:=yes}                   # overridden by ENV
 
-before=( 'service nap stop'  )    # commands to run before
- after=( 'service nap start' )    # commands to run after
+before=( 'service nap stop'  )      # commands to run before
+ after=( 'service nap start' )      # commands to run after
 
-base_dir=/__data/srvbak           # backups will be stored in subdirs
-keep_last=14                      # keep last 14 backups
+base_dir=/__data/srvbak             # backups in subdirs
+keep_last=14                        # keep last 14 backups
 
-export BAKTOGIT_REPO="$base_dir"/baktogit BAKTOGIT_PUSH=no
+gpg_opts=()
+gpg_key='...'
+
+# --
+
+export BAKTOGIT_REPO=/__data/baktogit/repo BAKTOGIT_PUSH=no
 baktogit=/opt/src/baktogit/baktogit.bash
-baktogit_items=( /__nap/apps/.apps /__nap/cfg )
-                                  # /etc w/o etckeeper here
+baktogit_items /__nap/apps/.apps /__nap/cfg \
+  /some/dir --exclude=/some/dir/skip/file
+  # /etc --exclude=/etc/shadow      # /etc w/o etckeeper here
 
-data_dirs=( /__data/files /__nap /etc )
-                                  # /etc w/ etckeeper here
+data_dir /__data/files              # rsync
+data_dir /__nap
+data_dir /some/dir --exclude=/some/dir/excluded/file
+
+sensitive_data_dir /etc --exclude=/shadow   # tar + gpg
+                                    # /etc w/ etckeeper here
 
 export PGHOST=localhost PGPASSFILE=/opt/src/srvbak/pgpass
-postgresql_dbs=( user1:db1 :db2 ) # :foo <=> foo:foo
+postgresql_dbs=( user1:db1 :db2 )   # :foo <=> foo:foo
 
 mongo_host=localhost mongo_passfile=/opt/src/srvbak/mongopass
 mongo_dbs=( db3 db4 )
