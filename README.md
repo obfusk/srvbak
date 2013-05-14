@@ -2,7 +2,7 @@
 
     File        : README.md
     Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-    Date        : 2013-05-13
+    Date        : 2013-05-14
 
     Copyright   : Copyright (C) 2013  Felix C. Stegerman
     Version     : 0.0.3
@@ -11,15 +11,15 @@
 
 ## TODO
 
-  * finish gpg/tar/sensitive data !!!
-
-#
-
+  * review!
   * test!
   * remove echo in rm!
+  * README!
   * remote sync! --> cpbak
-  * rsync/tar exclude
-  * options to not use gpg?!
+
+### Maybe
+
+  * options to not use gpg ?!
 
 ## Description
 []: {{{1

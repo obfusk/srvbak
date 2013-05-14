@@ -16,16 +16,32 @@ gpg_key='...'
 
 export BAKTOGIT_REPO=/__data/baktogit/repo BAKTOGIT_PUSH=no
 baktogit=/opt/src/baktogit/baktogit.bash
+
+# Usage: baktogit_items <baktogit-arg(s)>
 baktogit_items /__nap/apps/.apps /__nap/cfg \
-  /some/dir --exclude=/some/dir/skip/file
-  # /etc --exclude=/etc/shadow      # /etc w/o etckeeper here
+  /some/dir --exclude=/some/dir/not/this/file
+  # /etc --exclude=/etc/shadow      # (no etckeeper -> /etc here)
 
-data_dir /__data/files              # rsync
+# --
+
+# rsync: incremental, fast
+# Usage: data_dir <dir> [<arg(s)>]
+data_dir /__data/files
 data_dir /__nap
-data_dir /some/dir --exclude=/some/dir/excluded/file
+data_dir /some/dir1 --exclude=/not   # exclude /some/dir1/not
+data_dir /some/dir2 --exclude='*.foo' --exclude='/*.bar'
+                                    # exclude /some/dir2/**/*.foo
+                                    # and     /some/dir2/*.bar
 
-sensitive_data_dir /etc --exclude=/shadow   # tar + gpg
-                                    # /etc w/ etckeeper here
+# --
+
+# tar + gpg: not incremental, slow, safe
+# Usage: sensitive_data_dir <dir> [<arg(s)>]
+sensitive_data_dir /etc --exclude=/shadow
+                                    # exclude /etc/shadow
+                                    # (etckeeper -> /etc here)
+
+# --
 
 export PGHOST=localhost PGPASSFILE=/opt/src/srvbak/pgpass
 postgresql_dbs=( user1:db1 :db2 )   # :foo <=> foo:foo
