@@ -119,9 +119,10 @@ function rm_obsolete_backups ()
 function gpg_file ()                                            # {{{1
 {
   local out="$1" in="$2"
-  run_hdr "gpg ${gpg_opts[@]} -e -r $gpg_key < $in > $out"
-  dryrun || \
-    gpg "${gpg_opts[@]}" -e -r "$gpg_key" < "$in" > "$out"
+  local gpg=( gpg "${gpg_opts[@]}" -e -r "$gpg_key" )
+
+  run_hdr "${gpg[@]} < $in > $out"
+  dryrun || "${gpg[@]}" < "$in" > "$out"
   run_ftr
 }                                                               # }}}1
 
@@ -129,10 +130,12 @@ function gpg_file ()                                            # {{{1
 # Uses $gpg_{opts,key}.
 function tar_gpg ()                                             # {{{1
 {
-  local out="$1" tar='tar c --anchored' ; shift
-  run_hdr "$tar $@ | gpg ${gpg_opts[@]} -e -r $gpg_key > $out"
-  dryrun || \
-    $tar "$@" | gpg "${gpg_opts[@]}" -e -r "$gpg_key" > "$out"
+  local out="$1" ; shift
+  local tar=( tar c --anchored "$@" )
+  local gpg=( gpg "${gpg_opts[@]}" -e -r "$gpg_key" )
+
+  run_hdr "${tar[@]} | ${gpg[@]} > $out"
+  dryrun || "${tar[@]}" | "${gpg[@]}" > "$out"
   run_ftr
 }                                                               # }}}1
 
