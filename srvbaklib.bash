@@ -16,7 +16,8 @@
 # Uses: $date, $verbose, $dryrun; $base_dir, $keep_last; $gpg_opts,
 # $gpg_key; $mongo_host, $mongo_passfile.
 #
-# Uses/Sets: $baktogit_items; $data_dir__${data_dir_n}, $data_dir_n;
+# Uses/Sets: $BAKTOGIT_REPO, $baktogit_items, $baktogit_keep_last;
+# $data_dir__${data_dir_n}, $data_dir_n;
 # $sensitive_data_dir__${sensitive_data_dir_n}, $sensitive_data_dir_n.
 #
 # --                                                            ; }}}1
@@ -159,13 +160,22 @@ function process_mongo_passfile ()
 # --
 
 # Usage: baktogit_tar_gpg <baktogit> <baktogit-item(s)>
+# baktogit --> tar + gpg to $base_dir/baktogit/$date.tar.gpg.
+# Uses $BAKTOGIT_REPO, $baktogit_keep_last.
 function baktogit_tar_gpg ()
 {                                                               # {{{1
   local baktogit="$1" ; shift
   [ -x "$baktogit" -o -x "$( which "$baktogit" )" ] || \
     die "bad baktogit: $baktogit"
 
-  # ... run ... $baktogit ...
+  local keep_last="$baktogit_keep_last"   # dynamic override
+  local       dir="$base_dir/baktogit"
+  local        to="$dir/$date".tar.gpg
+
+  run "$baktogit" "$@"
+  run mkdir -p "$dir"
+  tar_gpg "$to" $verbose "$BAKTOGIT_REPO"
+  rm_obsolete_backups "$dir"
 }                                                               # }}}1
 
 # Usage: data_backup <path> [<opt(s)>]

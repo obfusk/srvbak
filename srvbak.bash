@@ -20,7 +20,8 @@ date="$( date +'%FT%T' )"   # no spaces!
 script="$( readlink -f "$0" )" ; scriptdir="$( dirname "$script" )"
 
 before=() after=() base_dir= keep_last= gpg_opts=() gpg_key=
-baktogit= baktogit_items=() data_dir_n=0 sensitive_data_dir_n=0
+baktogit= baktogit_items=() baktogit_keep_last=2
+data_dir_n=0 sensitive_data_dir_n=0
 postgresql_dbs=() mongo_host=localhost mongo_passfile= mongo_dbs=()
 
 source "$scriptdir/srvbaklib.bash"
