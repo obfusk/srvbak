@@ -1,13 +1,14 @@
 #!/bin/bash
 
-umask 0077
-: ${VERBOSE:=yes}                   # overridden by ENV
+# DRYRUN=yes                        # set in ENV
+: ${VERBOSE:=yes}                   # override in ENV
 
 before=( 'service nap stop'  )      # commands to run before
  after=( 'service nap start' )      # commands to run after
 
 base_dir=/__data/srvbak             # backups in subdirs
 keep_last=14                        # keep last 14 backups
+                                    # keep all -> keep_last=all
 
 gpg_opts=()
 gpg_key='...'
@@ -20,7 +21,7 @@ baktogit=/opt/src/baktogit/baktogit.bash
 # Usage: baktogit_items <baktogit-arg(s)>
 baktogit_items /__nap/apps/.apps /__nap/cfg \
   /some/dir --exclude=/some/dir/not/this/file
-  # /etc --exclude=/etc/shadow      # (no etckeeper -> /etc here)
+  # /etc --exclude='/etc/shadow*'   # (no etckeeper -> /etc here)
 
 # --
 
@@ -28,7 +29,7 @@ baktogit_items /__nap/apps/.apps /__nap/cfg \
 # Usage: data_dir <dir> [<arg(s)>]
 data_dir /__data/files
 data_dir /__nap
-data_dir /some/dir1 --exclude=/not   # exclude /some/dir1/not
+data_dir /some/dir1 --exclude=/not  # exclude /some/dir1/not
 data_dir /some/dir2 --exclude='*.foo' --exclude='/*.bar'
                                     # exclude /some/dir2/**/*.foo
                                     # and     /some/dir2/*.bar
@@ -37,9 +38,11 @@ data_dir /some/dir2 --exclude='*.foo' --exclude='/*.bar'
 
 # tar + gpg: not incremental, slow, safe
 # Usage: sensitive_data_dir <dir> [<arg(s)>]
-sensitive_data_dir /etc --exclude=/shadow
-                                    # exclude /etc/shadow
+sensitive_data_dir /etc --exclude='/etc/shadow*'
+                                    # exclude /etc/shadow*
                                     # (etckeeper -> /etc here)
+sensitive_data_dir /some/dir3 --exclude='*/*.skip'
+                                    # exclude /some/dir3/**/*.skip
 
 # --
 

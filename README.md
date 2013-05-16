@@ -2,7 +2,7 @@
 
     File        : README.md
     Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-    Date        : 2013-05-14
+    Date        : 2013-05-16
 
     Copyright   : Copyright (C) 2013  Felix C. Stegerman
     Version     : 0.0.3
@@ -13,7 +13,6 @@
 
   * review!
   * test!
-  * remove echo in rm!
   * README!
   * remote sync! --> cpbak
 
