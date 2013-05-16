@@ -16,6 +16,7 @@ gpg_key='...'
 # --
 
 export BAKTOGIT_REPO=/__data/baktogit/repo BAKTOGIT_PUSH=no
+                                    # NB: repo not in $base_dir!
 baktogit=/opt/src/baktogit/baktogit.bash
 
 # Usage: baktogit_items <baktogit-arg(s)>

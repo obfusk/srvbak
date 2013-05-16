@@ -5,42 +5,68 @@
     Date        : 2013-05-16
 
     Copyright   : Copyright (C) 2013  Felix C. Stegerman
-    Version     : 0.0.3
+    Version     : 0.0.4
 
 []: }}}1
 
 ## TODO
 
-  * review!
-  * test!
-  * README!
-  * remote sync! --> cpbak
+  * review! + test!
+  * remote sync! --> cpbak!
+
+### README
+
+  * dry run
+  * gpg
+  * tar/rsync: wildcards/slashes, anchored
+  * 2am/4am/...
 
 ### Maybe
 
-  * options to not use gpg ?!
+  * options to not use gpg for databases ?!
 
 ## Description
 []: {{{1
 
   srvbak - server backup (cron job)
 
-  srvbak.bash backups/dumps configuration files (using baktogit [2]),
-  data (incrementally, using cp -l and rsync), and databases
-  (currently postgresql and mongodb).  It keeps a specified number of
-  older backups, removing obsolete ones.  Services can be stopped and
-  restarted if needed.  The cron job runs srvbak, sending a report per
-  email using mailer [3].
+  srvbak.bash backs up configuration files, data, sensitive data, and
+  databases (currently postgresql and mongodb).  It keeps the
+  specified number of older backups, removing obsolete ones.  Services
+  can be stopped and restarted, if needed.
 
-  ... TODO ...
-  A cron job on another server can regularly copy the backups to e.g.
-  a NAS, using rsync and ssh.
-  ... TODO ...
+  See \*.sample for (annotated) configuration examples.
 
-  NB: when using baktogit, just set it up first, then let srvbak use
-  it.
+  To use baktogit [2] to back up configuration files, set it up (with
+  a repository not in srvbak's directory), then configure srvbak to
+  use it.
 
-  See \*.sample for examples.
+  To use gpg for secure backups, you will need to create a gpg key;
+  see GPG.
+
+  There is an optional cron job that runs srvbak daily, sending a
+  report per email using mailer [3].
+
+  To securely and automatically copy the backups (w/ rsync and ssh) to
+  e.g. a NAS, you can use cpbak [4].
+
+  It should also be possible to create a custom backup script using
+  the srvbaklib.bash library.
+
+[]: }}}1
+
+## srvbak.bash steps
+[]: {{{1
+
+  1. commands to run before (e.g. stop services)
+  2. baktogit + tar + gpg
+  3. data w/ rsync (incrementally, using cp -l)
+  4. sensitive data w/ tar + gpg
+  5. postgresql w/ pgdump + tar + gpg
+  6. mongodb w/ mongodump + tar + gpg
+  7. commands to run after (e.g. start services)
+
+  Each step is optional.
 
 []: }}}1
 
@@ -56,10 +82,10 @@
 
 ### Run
 
-  If no argument is given, looks for /etc/srvbakrc or
+  With no arguments, looks for /etc/srvbakrc or
   /opt/src/srvbak/srvbakrc.
 
-    $ /opt/src/srvbak/srvbak.bash [ /opt/src/srvbak/srvbakrc ]
+    $ /opt/src/srvbak/srvbak.bash /path/to/srvbakrc
 
 ### Cron
 
@@ -68,6 +94,10 @@
     $ cp -i /opt/src/srvbak/srvbak.cron.sample /etc/cron.daily/srvbak
     $ vim /etc/cron.daily/srvbak
     $ chmod +x /etc/cron.daily/srvbak
+
+### GPG
+
+  ...
 
 []: }}}1
 
@@ -89,6 +119,9 @@
 
   [3] mailer
   --- https://github.com/noxqsgit/mailer
+
+  [4] cpbak
+  --- https://github.com/noxqsgit/cpbak
 
 []: }}}1
 
