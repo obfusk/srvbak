@@ -33,8 +33,8 @@ function die () { echo "$@" 2>&1; exit 1; }
 # Checks ${PIPESTATUS[@]} and dies if any are non-zero.
 function pipe_ckh ()
 {                                                               # {{{1
-  local x
-  for x in "${PIPESTATUS[@]}"; do
+  local ps=( "${PIPESTATUS[@]}" ) x
+  for x in "${ps[@]}"; do
     [ "$x" -eq 0 ] || die 'non-zero PIPESTATUS' "$@"
   done
 }                                                               # }}}1
@@ -96,7 +96,17 @@ function hashpath ()
 # --
 
 # Usage: ls_backups <dir>
-function ls_backups () { ls "$1" | grep0 -E '^[0-9]{4}-'; pipe_ckh; }
+# Lists backups in <dir>; if dryrun and <dir> does not exist, prints a
+# message to stderr instead of failing.
+function ls_backups ()
+{                                                               # {{{1
+  local dir="$1"
+  if dryrun && [ ! -e "$dir" ]; then
+    echo "( ls_backups: DRY RUN and \`$dir' does not exist )" >&2
+  else
+    ls "$dir" | grep0 -E '^[0-9]{4}-'; pipe_ckh
+  fi
+}                                                               # }}}1
 
 # Usage: last_backup <dir>
 # Uses ls_backups.
