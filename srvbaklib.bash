@@ -53,7 +53,7 @@ function dryrun () { [[ "$dryrun" == [Yy]* ]]; }
 
 # Usage: mktemp_dry [<arg(s)>]
 function mktemp_dry ()
-{ if dryrun; mktemp --dry-run "$@"; else mktemp "$@"; fi; }
+{ if dryrun; then mktemp --dry-run "$@"; else mktemp "$@"; fi; }
 
 # --
 
