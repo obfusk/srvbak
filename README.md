@@ -2,10 +2,10 @@
 
     File        : README.md
     Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-    Date        : 2013-05-16
+    Date        : 2013-05-17
 
     Copyright   : Copyright (C) 2013  Felix C. Stegerman
-    Version     : 0.0.4
+    Version     : 0.0.5
 
 []: }}}1
 
@@ -17,7 +17,6 @@
 ### README
 
   * dry run
-  * gpg
   * tar/rsync: wildcards/slashes, anchored
   * 2am/4am/...
 
@@ -72,24 +71,28 @@
 
 []: }}}1
 
-## Usage
+## Install
 []: {{{1
-
-### Install
 
     $ mkdir -p /opt/src
     $ git clone https://github.com/noxqsgit/srvbak.git /opt/src/srvbak
     $ cp -i /opt/src/srvbak/srvbakrc{.sample,}
     $ vim /opt/src/srvbak/srvbakrc
 
-### Run
+[]: }}}1
+
+## Run
+[]: {{{1
 
   With no arguments, looks for /etc/srvbakrc or
   /opt/src/srvbak/srvbakrc.
 
     $ /opt/src/srvbak/srvbak.bash /path/to/srvbakrc
 
-### Cron
+[]: }}}1
+
+## Cron
+[]: {{{1
 
   If you want reports per email, install mailer [2].
 
@@ -97,9 +100,19 @@
     $ vim /etc/cron.daily/srvbak
     $ chmod +x /etc/cron.daily/srvbak
 
-### GPG
+[]: }}}1
 
-  ...
+## GPG
+[]: {{{1
+
+    $ gpg --gen-key           # create a gpg key pair on your computer
+                              # the key id is something like 1AA35570
+    $ gpg -o 1AA35570.pub --export -a 1AA35570    # export public key
+    $ ssh user@server sudo -H gpg --import < 1AA35570.pub
+                              # import public key (for root@server)
+
+    root@server$ gpg --list-keys        # should contain 1AA35570
+    root@server$ vim /path/to/srvbakrc  # gpg_key=1AA35570
 
 []: }}}1
 
