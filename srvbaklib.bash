@@ -4,7 +4,7 @@
 #
 # File        : srvbaklib.bash
 # Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-# Date        : 2013-05-16
+# Date        : 2013-05-17
 #
 # Copyright   : Copyright (C) 2013  Felix C. Stegerman
 # Licence     : GPLv2
@@ -26,8 +26,26 @@ export LC_COLLATE=C
 
 # --
 
-# Usage: die <msg>
+# Usage: die <msg(s)>
 function die () { echo "$@" 2>&1; exit 1; }
+
+# Usage: pipe_ckh [<msg(s)>]
+# Checks ${PIPESTATUS[@]} and dies if any are non-zero.
+function pipe_ckh ()
+{                                                               # {{{1
+  local x
+  for x in "${PIPESTATUS[@]}"; do
+    [ "$x" -eq 0 ] || die 'non-zero PIPESTATUS' "$@"
+  done
+}                                                               # }}}1
+
+# Usage: grep0 [<arg(s)>]
+# Runs grep <arg(s)> but returns 0 if grep returned 0 or 1; and 1 if
+# grep returned something else.  Thus, only returns non-zero if grep
+# actually failed, not if it simply found nothing.
+function grep0 () { grep "$@" || [ "$?" -eq 1 ]; }
+
+# --
 
 # Usage: dryrun
 # Uses: $dryrun.
@@ -78,16 +96,16 @@ function hashpath ()
 # --
 
 # Usage: ls_backups <dir>
-function ls_backups () { ls "$1" | grep -E '^[0-9]{4}-'; }
+function ls_backups () { ls "$1" | grep0 -E '^[0-9]{4}-'; pipe_ckh; }
 
 # Usage: last_backup <dir>
 # Uses ls_backups.
-function last_backup () { ls_backups "$1" | tail -n 1; }
+function last_backup () { ls_backups "$1" | tail -n 1; pipe_ckh; }
 
 # Usage: obsolete_backups <dir>
 # Uses: $keep_last, ls_backups.
 function obsolete_backups ()
-{ ls_backups "$1" | head -n -"$keep_last"; }
+{ ls_backups "$1" | head -n -"$keep_last"; pipe_ckh; }
 
 # Usage: cp_last_backup <dir> <path>
 # Copies last backup in <dir> (if one exists) to <path> using hard
@@ -97,8 +115,9 @@ function obsolete_backups ()
 function cp_last_backup ()
 {                                                               # {{{1
   local dir="$1" path="$2" ; local last="$( last_backup "$dir" )"
-  [ -n "$last" -a -e "$dir/$last" ] && \
+  if [ -n "$last" -a -e "$dir/$last" ]; then
     run cp -alT "$dir/$last" "$path"
+  fi
 }                                                               # }}}1
 
 # Usage: rm_obsolete_backups <dir>
@@ -136,7 +155,7 @@ function tar_gpg ()                                             # {{{1
   local gpg=( gpg "${gpg_opts[@]}" -e -r "$gpg_key" )
 
   run_hdr "${tar[@]} | ${gpg[@]} > $out"
-  dryrun || "${tar[@]}" | "${gpg[@]}" > "$out"
+  dryrun || { "${tar[@]}" | "${gpg[@]}" > "$out"; pipe_ckh; }
   run_ftr
 }                                                               # }}}1
 
