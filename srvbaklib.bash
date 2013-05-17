@@ -51,6 +51,12 @@ function grep0 () { grep "$@" || [ "$?" -eq 1 ]; }
 # Uses: $dryrun.
 function dryrun () { [[ "$dryrun" == [Yy]* ]]; }
 
+# Usage: mktemp_dry [<arg(s)>]
+function mktemp_dry ()
+{ if dryrun; mktemp --dry-run "$@"; else mktemp "$@"; fi; }
+
+# --
+
 function run_hdr () { echo "==> $@"; }
 function run_ftr () { echo; }
 
@@ -255,7 +261,7 @@ function pg_backup ()
 {                                                               # {{{1
   local dbname="$1" dbuser="$2"
   local dir="$base_dir/postgresql/$dbname"
-  local temp="$( mktemp )"
+  local temp="$( mktemp_dry )"
   local dump="$dir/$date".sql.gpg
 
   run mkdir -p "$dir"
@@ -275,7 +281,7 @@ function mongo_backup ()
 
   local dbname="$1" user pass
   local dir="$base_dir/mongodb/$dbname"
-  local temp="$( mktemp -d )" ; local tsub="$dbname/$date"
+  local temp="$( mktemp_dry -d )" ; local tsub="$dbname/$date"
   local dump="$dir/$date".tar.gpg
 
   [[ "$dbname" =~ ^[A-Za-z0-9]+$ ]] || die 'invalid mongo db name'
