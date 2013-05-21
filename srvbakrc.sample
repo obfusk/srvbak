@@ -22,7 +22,8 @@ baktogit=/opt/src/baktogit/baktogit.bash
 # Usage: baktogit_items <baktogit-arg(s)>
 baktogit_items /__nap/apps/.apps /__nap/cfg \
   /some/dir --exclude=/some/dir/not/this/file
-  # /etc --exclude='/etc/shadow*'   # (no etckeeper -> /etc here)
+  # /etc --exclude='/etc/shadow*' --exclude='/etc/ssh/ssh_host_*_key'
+                                    # (no etckeeper -> /etc here)
 
 # --
 
@@ -39,8 +40,8 @@ data_dir /some/dir2 --exclude='*.foo' --exclude='/*.bar'
 
 # tar + gpg: not incremental, slow, safe
 # Usage: sensitive_data_dir <dir> [<arg(s)>]
-sensitive_data_dir /etc --exclude='/etc/shadow*'
-                                    # exclude /etc/shadow*
+sensitive_data_dir /etc --exclude='/etc/shadow*' \
+                        --exclude='/etc/ssh/ssh_host_*_key'
                                     # (etckeeper -> /etc here)
 sensitive_data_dir /some/dir3 --exclude='*/*.skip'
                                     # exclude /some/dir3/**/*.skip

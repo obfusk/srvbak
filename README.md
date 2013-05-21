@@ -5,7 +5,7 @@
     Date        : 2013-05-21
 
     Copyright   : Copyright (C) 2013  Felix C. Stegerman
-    Version     : 0.0.5
+    Version     : 0.2.0-dev
 
 []: }}}1
 
@@ -16,8 +16,6 @@
 
 ### README
 
-  * dry run
-  * tar/rsync: wildcards/slashes, anchored
   * 2am/4am/...
 
 ### Maybe
@@ -40,7 +38,7 @@
   a repository not in srvbak's directory), then configure srvbak to
   use it.
 
-  To use gpg for secure backups, you will need to create a gpg key;
+  To use gpg for secure backups, you will need (to create) a gpg key;
   see GPG.
 
   There is an optional cron job that runs srvbak daily, sending a
@@ -54,12 +52,27 @@
 
 []: }}}1
 
+## Security Warning
+[]: {{{1
+
+  You should be careful with files like `/etc/shadow` that must remain
+  secret.  srvbak does its best to keep everything secure, by setting
+  a umask of 0077 and encrypting everything but non-sensitive data.
+  When using baktogit, you should read its Security Warning.
+
+  Files you may want to exclude from backups, or at least be very
+  careful with (e.g. by using encryption) are: `/etc/shadow*`,
+  `/etc/ssh/ssh_host_*_key` and any other private keys and
+  configuration files with passwords.
+
+[]: }}}1
+
 ## srvbak.bash steps
 []: {{{1
 
   1. commands to run before (e.g. stop services)
   2. baktogit + tar + gpg
-  3. data w/ rsync (incrementally, using cp -l)
+  3. non-sensitive data w/ rsync (incrementally, using cp -l)
   4. sensitive data w/ tar + gpg
   5. postgresql w/ pgdump + tar + gpg
   6. mongodb w/ mongodump + tar + gpg
@@ -71,13 +84,27 @@
 
 []: }}}1
 
-## Install
+## Install and Configure
 []: {{{1
 
     $ mkdir -p /opt/src
     $ git clone https://github.com/noxqsgit/srvbak.git /opt/src/srvbak
     $ cp -i /opt/src/srvbak/srvbakrc{.sample,}
     $ vim /opt/src/srvbak/srvbakrc
+
+  The `srvbakrc.sample` annotated configuration file example should be
+  mostly self-explanatory.
+
+  If you set `DRYRUN=yes` in srvbakrc or ENV, srvbak will perform a
+  trial run with no changes made; this will allow you to see what
+  actions would be performed.
+
+  Arguments to `data_dir` and `sensitive_data_dir` will be passed on
+  to rsync and tar, respectively; as long as you only use `--exclude`,
+  and `--exclude-from` (or know what you are doing), all should be
+  well.  The tar command is run with the `--anchored` flag; you may
+  want to consult the tar documentaion for information about this flag
+  as well as the use of wildcards and slashes.
 
 []: }}}1
 
@@ -94,7 +121,7 @@
 ## Cron
 []: {{{1
 
-  If you want reports per email, install mailer [2].
+  If you want reports per email, install mailer [3].
 
     $ cp -i /opt/src/srvbak/srvbak.cron.sample /etc/cron.daily/srvbak
     $ vim /etc/cron.daily/srvbak
