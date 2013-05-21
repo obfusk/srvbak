@@ -4,7 +4,7 @@
 #
 # File        : srvbaklib.bash
 # Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-# Date        : 2013-05-17
+# Date        : 2013-05-21
 #
 # Copyright   : Copyright (C) 2013  Felix C. Stegerman
 # Licence     : GPLv2
@@ -97,7 +97,8 @@ function canonpath ()
 # SHA1 hash of canonical path.
 # Uses canonpath.
 function hashpath ()
-{ printf '%s' "$( canonpath "$1" )" | sha1sum | awk '{print $1}'; }
+{ printf '%s' "$( canonpath "$1" )" | sha1sum | awk '{print $1}'
+  pipe_ckh; }
 
 # --
 
@@ -150,12 +151,16 @@ function rm_obsolete_backups ()
 
 # --
 
+# Usage: set_gpg
+# Sets $gpg; uses $gpg_{opts,key}.
+function set_gpg ()
+{ gpg=( gpg "${gpg_opts[@]}" --batch -e -r "$gpg_key" ); }
+
 # Usage: gpg_file <out> <in>
-# Uses $gpg_{opts,key}.
+# Uses set_gpg.
 function gpg_file ()                                            # {{{1
 {
-  local out="$1" in="$2"
-  local gpg=( gpg "${gpg_opts[@]}" -e -r "$gpg_key" )
+  local out="$1" in="$2" gpg ; set_gpg
 
   run_hdr "${gpg[@]} < $in > $out"
   dryrun || "${gpg[@]}" < "$in" > "$out"
@@ -163,12 +168,11 @@ function gpg_file ()                                            # {{{1
 }                                                               # }}}1
 
 # Usage: tar_gpg <out> <arg(s)>
-# Uses $gpg_{opts,key}.
+# Uses set_gpg.
 function tar_gpg ()                                             # {{{1
 {
   local out="$1" ; shift
-  local tar=( tar c --anchored "$@" )
-  local gpg=( gpg "${gpg_opts[@]}" -e -r "$gpg_key" )
+  local tar=( tar c --anchored "$@" ) gpg ; set_gpg
 
   run_hdr "${tar[@]} | ${gpg[@]} > $out"
   dryrun || { "${tar[@]}" | "${gpg[@]}" > "$out"; pipe_ckh; }
