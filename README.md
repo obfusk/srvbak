@@ -57,8 +57,8 @@
 
   You should be careful with files like `/etc/shadow` that must remain
   secret.  srvbak does its best to keep everything secure, by setting
-  a umask of 0077 and encrypting everything but non-sensitive data.
-  When using baktogit, you should read its Security Warning.
+  a `umask` of `0077` and encrypting everything but non-sensitive
+  data.  When using baktogit, you should read its Security Warning.
 
   Files you may want to exclude from backups, or at least be very
   careful with (e.g. by using encryption) are: `/etc/shadow*`,
@@ -95,7 +95,7 @@
   The `srvbakrc.sample` annotated configuration file example should be
   mostly self-explanatory.
 
-  If you set `DRYRUN=yes` in srvbakrc or ENV, srvbak will perform a
+  If you set `DRYRUN=yes` in `srvbakrc` or ENV, srvbak will perform a
   trial run with no changes made; this will allow you to see what
   actions would be performed.
 
