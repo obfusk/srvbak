@@ -2,7 +2,7 @@
 
     File        : README.md
     Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-    Date        : 2013-05-17
+    Date        : 2013-05-21
 
     Copyright   : Copyright (C) 2013  Felix C. Stegerman
     Version     : 0.0.5
@@ -111,8 +111,15 @@
     $ ssh user@server sudo -H gpg --import < 1AA35570.pub
                               # import public key (for root@server)
 
-    root@server$ gpg --list-keys        # should contain 1AA35570
-    root@server$ vim /path/to/srvbakrc  # gpg_key=1AA35570
+    root@server$ gpg --list-keys          # should contain 1AA35570
+    root@server$ gpg --edit-key 1AA35570  # trust ultimately
+    gpg> trust
+    ...
+    Your decision? 5
+    ...
+    gpg> quit
+
+    root@server$ vim /path/to/srvbakrc    # gpg_key=1AA35570
 
 []: }}}1
 
