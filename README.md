@@ -99,6 +99,9 @@
   trial run with no changes made; this will allow you to see what
   actions would be performed.
 
+  When using baktogit, you'll need to `--exclude=.git` any `.git/`
+  directories.
+
   Arguments to `data_dir` and `sensitive_data_dir` will be passed on
   to rsync and tar, respectively; as long as you only use `--exclude`,
   and `--exclude-from` (or know what you are doing), all should be

@@ -20,7 +20,7 @@ export BAKTOGIT_REPO=/__data/baktogit/repo BAKTOGIT_PUSH=no
 baktogit=/opt/src/baktogit/baktogit.bash
 
 # Usage: baktogit_items <baktogit-arg(s)>
-baktogit_items /__nap/apps/.apps /__nap/cfg \
+baktogit_items --exclude='.git' /__nap/apps/.apps /__nap/cfg \
   /some/dir --exclude=/some/dir/not/this/file
   # /etc --exclude='/etc/shadow*' --exclude='/etc/ssh/ssh_host_*_key'
                                     # (no etckeeper -> /etc here)
