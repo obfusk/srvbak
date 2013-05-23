@@ -4,7 +4,7 @@
 #
 # File        : srvbaklib.bash
 # Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-# Date        : 2013-05-21
+# Date        : 2013-05-23
 #
 # Copyright   : Copyright (C) 2013  Felix C. Stegerman
 # Licence     : GPLv2
@@ -65,6 +65,32 @@ function run () { run_hdr "$@"; dryrun || "$@"; run_ftr; }
 
 # Usage: run_multi <cmd1-with-args> <cmd2-with-args> ...
 function run_multi () { local x; for x in "$@"; do run $x; done; }
+
+# --
+
+# Usage: read_status
+# Gets content of $base_dir/status, or 'ok first-run' if it does not
+# exist (yet).  See set_status.
+function read_status ()
+{                                                               # {{{1
+  local f="$base_dir"/status
+  if [ -e "$f" ]; then cat "$f"; else echo 'ok first-run'; fi
+}                                                               # }}}1
+
+# Usage: get_status
+# Sets $srvbak_status using read_status.
+function get_status () { srvbak_status="$( read_status )"; }
+
+# Usage: set_status <info>
+# Sets $srvbak_status and content of $base_dir/status; should be one
+# of: 'running $$', 'ok', or 'error'.
+# See get_status, set_ok, set_running, set_error.
+function set_status ()
+{ srvbak_status="$1"; echo "$1" > "$base_dir"/status; }
+
+function set_running  () { set_status "running $$"; }
+function set_ok       () { set_status ok; }
+function set_error    () { set_status error; }
 
 # --
 

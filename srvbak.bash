@@ -4,7 +4,7 @@
 #
 # File        : srvbak.bash
 # Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-# Date        : 2013-05-21
+# Date        : 2013-05-23
 #
 # Copyright   : Copyright (C) 2013  Felix C. Stegerman
 # Licence     : GPLv2
@@ -20,6 +20,7 @@ date="$( date +'%FT%T' )"   # no spaces!
 script="$( readlink -f "$0" )" ; scriptdir="$( dirname "$script" )"
 
 before=() after=() base_dir= keep_last= gpg_opts=() gpg_key=
+status_must_be= status_must_not_be=
 baktogit= baktogit_items=() baktogit_keep_last=2
 data_dir_n=0 sensitive_data_dir_n=0
 postgresql_dbs=() mongo_host=localhost mongo_passfile= mongo_dbs=()
@@ -38,8 +39,29 @@ for x in base_dir keep_last gpg_key; do
   eval "y=\$$x" ; [ -z "$y" ] && die "empty \$$y"
 done
 
+get_status
+if  [ -n "$status_must_be"] && \
+    [[ "$srvbak_status" != $status_must_be ]]; then
+  die "STATUS is $srvbak_status (!= $status_must_be)"
+fi
+if  [ -n "$status_must_not_be"] && \
+    [[ "$srvbak_status" == $status_must_not_be ]]; then
+  die "STATUS is $srvbak_status (== $status_must_not_be)"
+fi
+
 if [[ "$VERBOSE" == [Yy]* ]]; then verbose=-v; else verbose=; fi
 export VERBOSE ; dryrun="$DRYRUN"
+
+# --
+
+function atexit ()
+{
+  if [[ "$srvbak_status" != ok* ]]; then
+    set_error ; echo ERROR ; echo
+  fi
+}
+
+set_running ; trap atexit 0
 
 # --
 
@@ -80,7 +102,6 @@ fi
 # 7. after
 run_multi "${after[@]}"
 
-echo OK
-echo
+set_ok ; echo OK ; echo
 
 # vim: set tw=70 sw=2 sts=2 et fdm=marker :
