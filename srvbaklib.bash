@@ -4,7 +4,7 @@
 #
 # File        : srvbaklib.bash
 # Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-# Date        : 2013-05-23
+# Date        : 2013-05-24
 #
 # Copyright   : Copyright (C) 2013  Felix C. Stegerman
 # Licence     : GPLv2
@@ -44,6 +44,18 @@ function pipe_ckh ()
 # grep returned something else.  Thus, only returns non-zero if grep
 # actually failed, not if it simply found nothing.
 function grep0 () { grep "$@" || [ "$?" -eq 1 ]; }
+
+# Usage: lock <file> [<target>]
+# Creates lock file using ln -s; target defaults to $$; dies if ln
+# fails and message doesn't contain 'exists'.
+function lock ()
+{ (                                                             # {{{1
+  set +e; local m="$( ln -s "${2:-$$}" "$1" 2>&1 )" ; local r="$?"
+  if [ "$r" -ne 0 ] && [[ "$m" != *exists* ]]; then
+    die "locking failed -- $m"
+  fi
+  return "$r"
+); }                                                            # }}}1
 
 # --
 

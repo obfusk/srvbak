@@ -2,7 +2,7 @@
 
     File        : README.md
     Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-    Date        : 2013-05-21
+    Date        : 2013-05-24
 
     Copyright   : Copyright (C) 2013  Felix C. Stegerman
     Version     : 0.2.0-dev
@@ -74,13 +74,18 @@
   2. baktogit + tar + gpg
   3. non-sensitive data w/ rsync (incrementally, using cp -l)
   4. sensitive data w/ tar + gpg
-  5. postgresql w/ pgdump + tar + gpg
+  5. postgresql w/ pgdump + gpg
   6. mongodb w/ mongodump + tar + gpg
-  7. commands to run after (e.g. start services)
+  7. fix permissions
+  8. commands to run after (e.g. start services)
 
 #
 
   Each step is optional.
+
+  A lock file (`ln -s $$ $base_dir/lock`) is used to prevent
+  concurrent backups; you can create+rm this lock file yourself when
+  e.g. copying backups elsewhere.
 
 []: }}}1
 

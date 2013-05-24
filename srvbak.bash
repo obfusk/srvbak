@@ -4,7 +4,7 @@
 #
 # File        : srvbak.bash
 # Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-# Date        : 2013-05-23
+# Date        : 2013-05-24
 #
 # Copyright   : Copyright (C) 2013  Felix C. Stegerman
 # Licence     : GPLv2
@@ -18,6 +18,10 @@ umask 0077
 
 date="$( date +'%FT%T' )"   # no spaces!
 script="$( readlink -f "$0" )" ; scriptdir="$( dirname "$script" )"
+
+echo "srvbak of $( hostname ) @ ${date/T/ }" ; echo
+
+# --
 
 before=() after=() base_dir= keep_last= gpg_opts=() gpg_key=
 status_must_be= status_must_not_be=
@@ -54,18 +58,19 @@ export VERBOSE ; dryrun="$DRYRUN"
 
 # --
 
+lock="$base_dir/lock"
+
 function atexit ()
 {
-  if [[ "$srvbak_status" != ok* ]]; then
-    set_error ; echo ERROR ; echo
-  fi
+  if [[ "$srvbak_status" != ok* ]]; then set_error; echo ERROR; fi
+  rm -f "$lock"
+  echo
 }
 
-set_running ; trap atexit 0
+lock "$lock" || die LOCKED ; set_running ; trap atexit 0
 
 # --
 
-echo "srvbak of $( hostname ) @ ${date/T/ }" ; echo
 dryrun && { echo '--> DRY RUN <--'; echo; }
 
 # 1. before
@@ -99,9 +104,12 @@ if [ "${#mongo_dbs[@]}" -ne 0 ]; then
   for db in "${mongo_dbs[@]}"; do mongo_backup "$db"; done
 fi
 
-# 7. after
+# 7. fix permissions
+# TODO
+
+# 8. after
 run_multi "${after[@]}"
 
-set_ok ; echo OK ; echo
+set_ok ; echo OK
 
 # vim: set tw=70 sw=2 sts=2 et fdm=marker :
