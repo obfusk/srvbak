@@ -18,7 +18,8 @@
 #
 # Uses/Sets: $BAKTOGIT_REPO, $baktogit_items, $baktogit_keep_last;
 # $data_dir__${data_dir_n}, $data_dir_n;
-# $sensitive_data_dir__${sensitive_data_dir_n}, $sensitive_data_dir_n.
+# $sensitive_data_dir__${sensitive_data_dir_n}, $sensitive_data_dir_n;
+# $srvbak_status.
 #
 # --                                                            ; }}}1
 
@@ -81,11 +82,11 @@ function run_multi () { local x; for x in "$@"; do run $x; done; }
 # --
 
 # Usage: read_status
-# Gets content of $base_dir/status, or 'ok first-run' if it does not
-# exist (yet).  See set_status.
+# Gets content of $base_dir/.var/status, or 'ok first-run' if it does
+# not exist (yet).  See set_status.
 function read_status ()
 {                                                               # {{{1
-  local f="$base_dir"/status
+  local f="$base_dir"/.var/status
   if [ -e "$f" ]; then cat "$f"; else echo 'ok first-run'; fi
 }                                                               # }}}1
 
@@ -94,11 +95,11 @@ function read_status ()
 function get_status () { srvbak_status="$( read_status )"; }
 
 # Usage: set_status <info>
-# Sets $srvbak_status and content of $base_dir/status; should be one
-# of: 'running $$', 'ok', or 'error'.
+# Sets $srvbak_status and content of $base_dir/.var/status; should be
+# one of: 'running $$', 'ok', or 'error'.
 # See get_status, set_ok, set_running, set_error.
 function set_status ()
-{ srvbak_status="$1"; echo "$1" > "$base_dir"/status; }
+{ srvbak_status="$1"; echo "$1" > "$base_dir"/.var/status; }
 
 function set_running  () { set_status "running $$"; }
 function set_ok       () { set_status ok; }
@@ -137,6 +138,58 @@ function canonpath ()
 function hashpath ()
 { printf '%s' "$( canonpath "$1" )" | sha1sum | awk '{print $1}'
   pipe_ckh; }
+
+# --
+
+# Usage: chown_to <user>
+# Chowns $base_dir and, recursively, $base_dir/*/.
+function chown_to ()
+{                                                               # {{{1
+  local user="$1"
+  run chown             "$user" "$base_dir"
+  run chown $verbose -R "$user" "$base_dir"/*/
+}                                                               # }}}1
+
+# Usage: chgrp_to <group>
+# Chgrps $base_dir and, recursively, $base_dir/*/**.
+function chgrp_to ()
+{                                                               # {{{1
+  local group="$1"
+  run chgrp             "$group" "$base_dir"
+  run chgrp $verbose -R "$group" "$base_dir"/*/
+}                                                               # }}}1
+
+# Usage: chmod_dirs <mode>
+# Chmods $base_dir and dirs in $base_dir/*/.
+function chmod_dirs ()
+{                                                               # {{{1
+  local mode="$1"
+  run chmod "$mode" "$base_dir"
+  run find "$base_dir"/*/ -type d -execdir \
+    chmod $verbose "$mode" {} \;
+}                                                               # }}}1
+
+# Usage: chmod_files <mode>
+# Chmods files in $base_dir/*/.
+function chmod_files ()
+{                                                               # {{{1
+  local mode="$1"
+  run find "$base_dir"/*/ -type f -execdir \
+    chmod $verbose "$mode" {} \;
+}                                                               # }}}1
+
+# Usage: original_files_info <path> <to>
+# Lists null-separated mode:owner:group:time:path of all files and
+# directories in $path that also exist in $to (e.g. $path/some/file
+# and $to/$path/some/file).
+function original_files_info ()
+{                                                               # {{{1
+  local path="$1" to="$2" m u g t p
+  find "$path" -printf '%m:%u:%g:%T@:%p\0' \
+      | while IFS=: read -r -d '' m u g t p; do
+    [ -e "$to/$p" ] && printf '%s\0' "$m:$u:$g:$t:$p"
+  done
+}                                                               # }}}1
 
 # --
 
@@ -258,20 +311,34 @@ function baktogit_tar_gpg ()
 # Usage: data_backup <path> [<opt(s)>]
 # rsync directory to $base_dir/data/hash/$hash_of_path/$date,
 # symlinked from $base_dir/data/path/$path.
+# Write $path to $base_dir/data/info/${hash_of_path}.path.
+# List null-separated mode:owner:group:time:path of all files and
+# directories to $base_dir/data/info/${hash_of_path}.files.
 # Hard links last backup (if any); removes obsolete backups.
 function data_backup ()
 {                                                               # {{{1
   local path="$1" ; shift ; local hash="$( hashpath "$path" )"
-  local    ddir="$base_dir"/data
-  local pdir_up="$ddir/path/$( dirname "$path" )"
-  local    pdir="$ddir/path/$path"
-  local    hdir="$ddir/hash/$hash"
-  local      to="$hdir/$date"
+  local       ddir="$base_dir"/data
+  local    pdir_up="$ddir/path/$( dirname "$path" )"
+  local       pdir="$ddir/path/$path"
+  local       hdir="$ddir/hash/$hash"
+  local       idir="$ddir/info"
+  local         to="$hdir/$date"
+  local  info_path="$idir/$hash.path"
+  local info_files="$idir/$hash.files"
 
-  run mkdir -p "$hdir" "$pdir_up"
+  run mkdir -p "$hdir" "$idir" "$pdir_up"
   cp_last_backup "$hdir" "$to"
-  run rsync -a $verbose --delete "$@" "$path"/ "$to"/
+
+  run rsync -a --no-owner --no-group --no-perms $verbose --delete \
+    "$@" "$path"/ "$to"/
   [ -e "$pdir" ] || run ln -Ts "$hdir" "$pdir"
+
+  echo "(writing $info_path)"                                   # TODO
+  printf '%s' "$path" > "$info_path"
+  echo "(writing $info_files)"                                  # TODO
+  original_files_info "$path" "$to" > "$info_files"
+
   rm_obsolete_backups "$hdir"
 }                                                               # }}}1
 

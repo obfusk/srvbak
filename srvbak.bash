@@ -24,7 +24,8 @@ echo "srvbak of $( hostname ) @ ${date/T/ }" ; echo
 # --
 
 before=() after=() base_dir= keep_last= gpg_opts=() gpg_key=
-status_must_be= status_must_not_be=
+chown_to= chgrp_to= chmod_dirs= chmod_files=
+srvbak_status= status_must_be= status_must_not_be=
 baktogit= baktogit_items=() baktogit_keep_last=2
 data_dir_n=0 sensitive_data_dir_n=0
 postgresql_dbs=() mongo_host=localhost mongo_passfile= mongo_dbs=()
@@ -43,7 +44,10 @@ for x in base_dir keep_last gpg_key; do
   eval "y=\$$x" ; [ -z "$y" ] && die "empty \$$y"
 done
 
-get_status
+# --
+
+mkdir -p "$base_dir/.var" ; lock="$base_dir/.var/lock" ; get_status
+
 if  [ -n "$status_must_be"] && \
     [[ "$srvbak_status" != $status_must_be ]]; then
   die "STATUS is $srvbak_status (!= $status_must_be)"
@@ -55,10 +59,6 @@ fi
 
 if [[ "$VERBOSE" == [Yy]* ]]; then verbose=-v; else verbose=; fi
 export VERBOSE ; dryrun="$DRYRUN"
-
-# --
-
-lock="$base_dir/lock"
 
 function atexit ()
 {
@@ -105,7 +105,10 @@ if [ "${#mongo_dbs[@]}" -ne 0 ]; then
 fi
 
 # 7. fix permissions
-# TODO
+[ -n "$chown_to"    ] && chown_to     "$chown_to"
+[ -n "$chgrp_to"    ] && chgrp_to     "$chgrp_to"
+[ -n "$chmod_dirs"  ] && chmod_dirs   "$chmod_dirs"
+[ -n "$chmod_files" ] && chmod_files  "$chmod_files"
 
 # 8. after
 run_multi "${after[@]}"

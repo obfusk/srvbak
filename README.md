@@ -76,14 +76,14 @@
   4. sensitive data w/ tar + gpg
   5. postgresql w/ pgdump + gpg
   6. mongodb w/ mongodump + tar + gpg
-  7. fix permissions
+  7. fix permissions (chown/chgrp/chmod)
   8. commands to run after (e.g. start services)
 
 #
 
   Each step is optional.
 
-  A lock file (`ln -s $$ $base_dir/lock`) is used to prevent
+  A lock file (`ln -s $$ $base_dir/.var/lock`) is used to prevent
   concurrent backups; you can create+rm this lock file yourself when
   e.g. copying backups elsewhere.
 
