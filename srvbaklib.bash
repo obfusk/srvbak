@@ -179,15 +179,15 @@ function chmod_files ()
 }                                                               # }}}1
 
 # Usage: original_files_info <path> <to>
-# Lists null-separated mode:owner:group:time:path of all files and
-# directories in $path that also exist in $to (e.g. $path/some/file
-# and $to/$path/some/file).
+# Lists null-separated mode:owner:group:time:path of the original
+# files in $path for all files in $to (e.g. for $to/some/file we get
+# the info of $path/some/file).
+# TODO: how best to handle failures?
 function original_files_info ()
 {                                                               # {{{1
-  local path="$1" to="$2" m u g t p
-  find "$path" -printf '%m:%u:%g:%T@:%p\0' \
-      | while IFS=: read -r -d '' m u g t p; do
-    [ -e "$to/$p" ] && printf '%s\0' "$m:$u:$g:$t:$p"
+  local path="$( canonpath "$1" )" to="$2" file
+  find "$to" -printf '%P\0' | while IFS= read -r -d '' file; do
+    stat --printf '%a:%U:%G:%.Y:%n\0' -- "$path/$file"
   done
 }                                                               # }}}1
 
