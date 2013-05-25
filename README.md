@@ -13,6 +13,7 @@
 
   * review! + test!
   * remote sync! --> cpbak!
+  * dpkg selections, ...
 
 ### README
 
