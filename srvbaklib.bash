@@ -50,14 +50,13 @@ function grep0 () { grep "$@" || [ "$?" -eq 1 ]; }
 # Creates lock file using ln -s; target defaults to $$; dies if ln
 # fails and message doesn't contain 'exists'.
 function lock ()
-{ (                                                             # {{{1
-  set +e ; local m r
-  m="$( LC_ALL=C ln -s "${2:-$$}" "$1" 2>&1 )" ; r="$?"
-  if [ "$r" -ne 0 ] && [[ "$m" != *exists* ]]; then
-    die "locking failed -- $m"
+{                                                               # {{{1
+  local x="$( ! LC_ALL=C ln -s "${2:-$$}" "$1" 2>&1 || echo OK )"
+  if [ "$x" != OK ]; then
+    [[ "$x" != *exists* ]] && die "locking failed -- $x"
+    return 1
   fi
-  exit "$r"   # exit subshell / function return value
-); }                                                            # }}}1
+}                                                               # }}}1
 
 # --
 
