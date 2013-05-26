@@ -311,8 +311,8 @@ function baktogit_tar_gpg ()
 # Usage: data_backup <path> [<opt(s)>]
 # rsync directory to $base_dir/data/hash/$hash_of_path/$date,
 # symlinked from $base_dir/data/path/$path.
-# Write $path to $base_dir/data/info/${hash_of_path}.path.
-# List null-separated mode:owner:group:time:path of all files and
+# Writes $path to $base_dir/data/info/${hash_of_path}.path.
+# Lists null-separated mode:owner:group:time:path of all files and
 # directories to $base_dir/data/info/${hash_of_path}.files.
 # Hard links last backup (if any); removes obsolete backups.
 function data_backup ()
@@ -346,19 +346,24 @@ function data_backup ()
 # tar + gpg directory to
 # $base_dir/sensitive_data/hash/$hash_of_path/$date.tar.gpg, symlinked
 # from $base_dir/sensitive_data/path/$path.
+# Writes $path to $base_dir/sensitive_data/info/${hash_of_path}.path.
 # Removes obsolete backups.
 function sensitive_data_backup ()
 {                                                               # {{{1
   local path="$1" ; shift ; local hash="$( hashpath "$path" )"
-  local    ddir="$base_dir"/sensitive_data
-  local pdir_up="$ddir/path/$( dirname "$path" )"
-  local    pdir="$ddir/path/$path"
-  local    hdir="$ddir/hash/$hash"
-  local      to="$hdir/$date".tar.gpg
+  local      ddir="$base_dir"/sensitive_data
+  local   pdir_up="$ddir/path/$( dirname "$path" )"
+  local      pdir="$ddir/path/$path"
+  local      hdir="$ddir/hash/$hash"
+  local      idir="$ddir/info"
+  local        to="$hdir/$date".tar.gpg
+  local info_path="$idir/$hash.path"
 
-  run mkdir -p "$hdir" "$pdir_up"
+  run mkdir -p "$hdir" "$idir" "$pdir_up"
   tar_gpg "$to" $verbose "$@" "$path"
   [ -e "$pdir" ] || run ln -Ts "$hdir" "$pdir"
+  echo "(writing $info_path)"                                   # TODO
+  printf '%s' "$path" > "$info_path"
   rm_obsolete_backups "$hdir"
 }                                                               # }}}1
 
