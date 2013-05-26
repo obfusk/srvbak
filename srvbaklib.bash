@@ -28,7 +28,7 @@ export LC_COLLATE=C
 # --
 
 # Usage: die <msg(s)>
-function die () { echo "$@" 2>&1; exit 1; }
+function die () { echo "$@" >&2; exit 1; }
 
 # Usage: pipe_ckh [<msg(s)>]
 # Checks ${PIPESTATUS[@]} and dies if any are non-zero.
