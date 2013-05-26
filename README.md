@@ -13,7 +13,6 @@
 
   * review! + test!
   * remote sync! --> cpbak!
-  * dpkg selections, ...
   * info/echo
 
 ### README
@@ -78,8 +77,9 @@
   4. sensitive data w/ tar + gpg
   5. postgresql w/ pgdump + gpg
   6. mongodb w/ mongodump + tar + gpg
-  7. fix permissions (chown/chgrp/chmod)
-  8. commands to run after (e.g. start services)
+  7. dpkg selections
+  8. fix permissions (chown/chgrp/chmod)
+  9. commands to run after (e.g. start services)
 
 #
 

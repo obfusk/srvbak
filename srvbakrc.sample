@@ -71,4 +71,8 @@ postgresql_dbs=( user1:db1 :db2 )   # :foo <=> foo:foo
 mongo_host=localhost mongo_passfile=/opt/src/srvbak/mongopass
 mongo_dbs=( db3 db4 )
 
+# --
+
+dpkg_selections=yes                 # save dpkg selections
+
 # vim: set tw=70 sw=2 sts=2 et fdm=marker :

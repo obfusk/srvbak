@@ -4,7 +4,7 @@
 #
 # File        : srvbak.bash
 # Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-# Date        : 2013-05-24
+# Date        : 2013-05-26
 #
 # Copyright   : Copyright (C) 2013  Felix C. Stegerman
 # Licence     : GPLv2
@@ -29,6 +29,7 @@ srvbak_status= status_must_be= status_must_not_be=
 baktogit= baktogit_items=() baktogit_keep_last=2
 data_dir_n=0 sensitive_data_dir_n=0
 postgresql_dbs=() mongo_host=localhost mongo_passfile= mongo_dbs=()
+dpkg_selections=
 
 source "$scriptdir/srvbaklib.bash"
 
@@ -104,13 +105,16 @@ if [ "${#mongo_dbs[@]}" -ne 0 ]; then
   for db in "${mongo_dbs[@]}"; do mongo_backup "$db"; done
 fi
 
-# 7. fix permissions
+# 7. dpkg selections
+[[ "$dpkg_selections" == [Yy]* ]] && dpkg_selections_backup
+
+# 8. fix permissions
 [ -n "$chown_to"    ] && chown_to     "$chown_to"
 [ -n "$chgrp_to"    ] && chgrp_to     "$chgrp_to"
 [ -n "$chmod_dirs"  ] && chmod_dirs   "$chmod_dirs"
 [ -n "$chmod_files" ] && chmod_files  "$chmod_files"
 
-# 8. after
+# 9. after
 run_multi "${after[@]}"
 
 set_ok ; echo OK

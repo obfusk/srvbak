@@ -412,4 +412,18 @@ function mongo_backup ()
   rm_obsolete_backups "$dir"
 }                                                               # }}}1
 
+# Usage: dpkg_selections_backup
+# dpkg selections dump to $base_dir/dpkg/$date.
+# Removes obsolete backups.
+function dpkg_selections_backup ()
+{                                                               # {{{1
+  local dir="$base_dir/dpkg" ; local dump="$dir/$date"
+
+  run mkdir -p "$dir"
+  run_hdr "dpkg --get-selections > $dump"
+  dryrun || dpkg --get-selections > "$dump"
+  run_ftr
+  rm_obsolete_backups "$dir"
+}                                                               # }}}1
+
 # vim: set tw=70 sw=2 sts=2 et fdm=marker :
