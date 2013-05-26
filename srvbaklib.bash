@@ -4,7 +4,7 @@
 #
 # File        : srvbaklib.bash
 # Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-# Date        : 2013-05-24
+# Date        : 2013-05-26
 #
 # Copyright   : Copyright (C) 2013  Felix C. Stegerman
 # Licence     : GPLv2
@@ -51,11 +51,12 @@ function grep0 () { grep "$@" || [ "$?" -eq 1 ]; }
 # fails and message doesn't contain 'exists'.
 function lock ()
 { (                                                             # {{{1
-  set +e; local m="$( ln -s "${2:-$$}" "$1" 2>&1 )" ; local r="$?"
+  set +e ; local m r
+  m="$( LC_ALL=C ln -s "${2:-$$}" "$1" 2>&1 )" ; r="$?"
   if [ "$r" -ne 0 ] && [[ "$m" != *exists* ]]; then
     die "locking failed -- $m"
   fi
-  return "$r"
+  exit "$r"   # exit subshell / function return value
 ); }                                                            # }}}1
 
 # --
