@@ -1,0 +1,7 @@
+Cmnd_Alias SRVBAK_LOCKING =
+  /opt/src/srvbak/srvbak-lock.bash,
+  /opt/src/srvbak/srvbak-unlock.bash
+
+Defaults!SRVBAK_LOCKING always_set_home
+
+srvbak ALL = (root) NOPASSWD: SRVBAK_LOCKING
