@@ -24,10 +24,10 @@ chmod_files=640                     # set file perms  (if set)
 # --
 
 # The status (as kept in $base_dir/.var/status) should be one of:
-# 'running $$', 'ok', 'ok first-run', or 'error'.  The following will
-# make sure not to continue if running or error; you may want to
-# change this to status_must_not_be='running*' to continue even if the
-# last run failed.
+# 'running $$', 'ok', 'ok first-run', 'ok dryrun', or 'error'.  The
+# following will make sure not to continue if running or error; you
+# may want to change this to status_must_not_be='running*' to continue
+# even if the last run failed.
 status_must_be='ok*'
 
 # --

@@ -4,7 +4,7 @@
 #
 # File        : srvbak.bash
 # Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-# Date        : 2013-05-26
+# Date        : 2013-05-27
 #
 # Copyright   : Copyright (C) 2013  Felix C. Stegerman
 # Licence     : GPLv2
@@ -47,7 +47,13 @@ done
 
 # --
 
-mkdir -p "$base_dir/.var" ; lock="$base_dir/.var/lock" ; get_status
+if dryrun; then
+  echo '( DRY RUN -- skipping lock )'
+else
+  run mkdir -p "$base_dir/.var" ; lock="$base_dir/.var/lock"
+fi
+
+get_status
 
 if  [ -n "$status_must_be"] && \
     [[ "$srvbak_status" != $status_must_be ]]; then
@@ -63,12 +69,18 @@ export VERBOSE ; dryrun="$DRYRUN"
 
 function atexit ()
 {
+  dryrun || run rm -f "$lock"
   if [[ "$srvbak_status" != ok* ]]; then set_error; echo ERROR; fi
-  rm -f "$lock"
   echo
 }
 
-lock "$lock" || die LOCKED ; set_running ; trap atexit 0
+if ! dryrun; then
+  run_hdr "[lock] $lock"
+  lock "$lock" || die LOCKED
+  run_ftr
+fi
+
+set_running ; trap atexit 0
 
 # --
 

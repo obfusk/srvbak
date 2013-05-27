@@ -4,7 +4,7 @@
 #
 # File        : srvbaklib.bash
 # Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-# Date        : 2013-05-26
+# Date        : 2013-05-27
 #
 # Copyright   : Copyright (C) 2013  Felix C. Stegerman
 # Licence     : GPLv2
@@ -83,11 +83,15 @@ function run_multi () { local x; for x in "$@"; do run $x; done; }
 
 # Usage: read_status
 # Gets content of $base_dir/.var/status, or 'ok first-run' if it does
-# not exist (yet).  See set_status.
+# not exist (yet); or 'ok dryrun' if dryrun.  See set_status.
 function read_status ()
 {                                                               # {{{1
-  local f="$base_dir"/.var/status
-  if [ -e "$f" ]; then cat "$f"; else echo 'ok first-run'; fi
+  if dryrun; then
+    echo 'ok dryrun'
+  else
+    local f="$base_dir"/.var/status
+    if [ -e "$f" ]; then cat "$f"; else echo 'ok first-run'; fi
+  fi
 }                                                               # }}}1
 
 # Usage: get_status
@@ -99,7 +103,7 @@ function get_status () { srvbak_status="$( read_status )"; }
 # one of: 'running $$', 'ok', or 'error'.
 # See get_status, set_ok, set_running, set_error.
 function set_status ()
-{ srvbak_status="$1"; echo "$1" > "$base_dir"/.var/status; }
+{ srvbak_status="$1"; dryrun || echo "$1" > "$base_dir"/.var/status; }
 
 function set_running  () { set_status "running $$"; }
 function set_ok       () { set_status ok; }
@@ -313,7 +317,7 @@ function baktogit_tar_gpg ()
 # symlinked from $base_dir/data/path/$path.
 # Writes $path to $base_dir/data/info/${hash_of_path}.path.
 # Lists null-separated mode:owner:group:time:path of all files and
-# directories to $base_dir/data/info/${hash_of_path}.files.
+# directories to $base_dir/data/list/$hash_of_path/$date.
 # Hard links last backup (if any); removes obsolete backups.
 function data_backup ()
 {                                                               # {{{1
@@ -322,24 +326,29 @@ function data_backup ()
   local    pdir_up="$ddir/path/$( dirname "$path" )"
   local       pdir="$ddir/path/$path"
   local       hdir="$ddir/hash/$hash"
+  local       ldir="$ddir/list/$hash"
   local       idir="$ddir/info"
   local         to="$hdir/$date"
+  local info_files="$ldir/$date"
   local  info_path="$idir/$hash.path"
-  local info_files="$idir/$hash.files"
 
-  run mkdir -p "$hdir" "$idir" "$pdir_up"
+  run mkdir -p "$pdir_up" "$hdir" "$ldir" "$idir"
   cp_last_backup "$hdir" "$to"
 
   run rsync -a --no-owner --no-group --no-perms $verbose --delete \
     "$@" "$path"/ "$to"/
   [ -e "$pdir" ] || run ln -Ts "$hdir" "$pdir"
 
-  echo "(writing $info_path)"                                   # TODO
-  printf '%s' "$path" > "$info_path"
-  echo "(writing $info_files)"                                  # TODO
-  original_files_info "$path" "$to" > "$info_files"
+  run_hdr "[$path] > $info_path"
+  dryrun || printf '%s' "$path" > "$info_path"
+  run_ftr
+
+  run_hdr "[find $to -> stat $path] > $info_files"
+  dryrun || original_files_info "$path" "$to" > "$info_files"
+  run_ftr
 
   rm_obsolete_backups "$hdir"
+  rm_obsolete_backups "$ldir"
 }                                                               # }}}1
 
 # Usage: sensitive_data_backup <dir> [<opt(s)>]
@@ -359,11 +368,14 @@ function sensitive_data_backup ()
   local        to="$hdir/$date".tar.gpg
   local info_path="$idir/$hash.path"
 
-  run mkdir -p "$hdir" "$idir" "$pdir_up"
+  run mkdir -p "$pdir_up" "$hdir" "$idir"
   tar_gpg "$to" $verbose "$@" "$path"
   [ -e "$pdir" ] || run ln -Ts "$hdir" "$pdir"
-  echo "(writing $info_path)"                                   # TODO
-  printf '%s' "$path" > "$info_path"
+
+  run_hdr "[$path] > $info_path"
+  dryrun || printf '%s' "$path" > "$info_path"
+  run_ftr
+
   rm_obsolete_backups "$hdir"
 }                                                               # }}}1
 
