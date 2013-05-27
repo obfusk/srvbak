@@ -1,0 +1,27 @@
+#!/bin/bash
+
+base_dir=/__data/srvbak
+
+# --
+
+set -e
+
+# Usage: die <msg(s)>
+function die () { echo "$@" >&2; exit 1; }
+
+# Usage: lock <file> [<target>]
+# Creates lock file using ln -s; target defaults to $$; dies if ln
+# fails and message doesn't contain 'exists'.
+function lock ()
+{                                                               # {{{1
+  local x="$( ! LC_ALL=C ln -s "${2:-$$}" "$1" 2>&1 || echo OK )"
+  if [ "$x" != OK ]; then
+    [[ "$x" != *exists* ]] && die "locking failed -- $x"
+    return 1
+  fi
+}                                                               # }}}1
+
+mkdir -p "$base_dir/.var" ; lock="$base_dir/.var/lock"
+lock "$lock" || die LOCKED
+
+# vim: set tw=70 sw=2 sts=2 et fdm=marker :

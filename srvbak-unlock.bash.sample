@@ -1,0 +1,5 @@
+#!/bin/bash
+
+base_dir=/__data/srvbak
+
+set -e ; lock="$base_dir/.var/lock" ; rm -f "$lock"
