@@ -132,13 +132,13 @@
 
   If you want reports per email, install mailer [3].
 
-### Using cron.daily
+### Either using cron.daily
 
     $ cp -i /opt/src/srvbak/srvbak.cron.sample /etc/cron.daily/srvbak
     $ vim /etc/cron.daily/srvbak
     $ chmod +x /etc/cron.daily/srvbak
 
-### With e.g. cron.2am
+### or with e.g. cron.2am
 
   Add the following line to /etc/crontab:
 
