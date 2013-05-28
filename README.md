@@ -144,9 +144,12 @@
 
     25 2 * * * root  cd / && run-parts --report /etc/cron.2am
 
-  Then:
+  And:
 
     $ mkdir -p /etc/cron.2am
+
+  Then:
+
     $ cp -i /opt/src/srvbak/srvbak.cron.sample /etc/cron.2am/srvbak
     $ vim /etc/cron.2am/srvbak
     $ chmod +x /etc/cron.2am/srvbak
