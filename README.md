@@ -2,7 +2,7 @@
 
     File        : README.md
     Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-    Date        : 2013-05-27
+    Date        : 2013-05-28
 
     Copyright   : Copyright (C) 2013  Felix C. Stegerman
     Version     : 0.2.0-dev
@@ -12,16 +12,11 @@
 ## TODO
 
   * review! + test!
-  * remote sync! --> cpbak!
-  * sign/hash?
-
-### README
-
-  * 2am/4am/...
 
 ### Maybe
 
   * options to not use gpg for databases ?!
+  * sign/hash?
 
 ## Description
 []: {{{1
@@ -116,6 +111,10 @@
   want to consult the tar documentaion for information about this flag
   as well as the use of wildcards and slashes.
 
+  If you use cpbak, follow its instructions (which includes creating a
+  srvbak user), and then use `chgrp_to=srvbak` in srvbakrc to allow
+  the srvbak user read access to the backup.
+
 []: }}}1
 
 ## Run
@@ -133,9 +132,24 @@
 
   If you want reports per email, install mailer [3].
 
+### Using cron.daily
+
     $ cp -i /opt/src/srvbak/srvbak.cron.sample /etc/cron.daily/srvbak
     $ vim /etc/cron.daily/srvbak
     $ chmod +x /etc/cron.daily/srvbak
+
+### With e.g. cron.2am
+
+  Add the following line to /etc/crontab:
+
+    25 2 * * * root  cd / && run-parts --report /etc/cron.2am
+
+  Then:
+
+    $ mkdir -p /etc/cron.2am
+    $ cp -i /opt/src/srvbak/srvbak.cron.sample /etc/cron.2am/srvbak
+    $ vim /etc/cron.2am/srvbak
+    $ chmod +x /etc/cron.2am/srvbak
 
 []: }}}1
 
