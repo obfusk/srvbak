@@ -1,5 +1,5 @@
-Cmnd_Alias SRVBAK_LOCKING =
-  /opt/src/srvbak/srvbak-lock.bash,
+Cmnd_Alias SRVBAK_LOCKING = \
+  /opt/src/srvbak/srvbak-lock.bash, \
   /opt/src/srvbak/srvbak-unlock.bash
 
 Defaults!SRVBAK_LOCKING always_set_home
