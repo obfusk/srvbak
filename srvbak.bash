@@ -51,7 +51,7 @@ if [[ "$VERBOSE" == [Yy]* ]]; then verbose=-v; else verbose=; fi
 export VERBOSE ; dryrun="$DRYRUN"
 
 if dryrun; then
-  echo '( DRY RUN -- skipping lock )'
+  echo '--> DRY RUN <--'; echo '( skipping lock )'; echo
 else
   run mkdir -p "$base_dir/.var" ; lock="$base_dir/.var/lock"
 fi
@@ -83,8 +83,6 @@ fi
 set_running ; trap atexit 0
 
 # --
-
-dryrun && { echo '--> DRY RUN <--'; echo; }
 
 # 1. before
 run_multi "${before[@]}"
