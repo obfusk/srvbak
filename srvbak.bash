@@ -47,6 +47,9 @@ done
 
 # --
 
+if [[ "$VERBOSE" == [Yy]* ]]; then verbose=-v; else verbose=; fi
+export VERBOSE ; dryrun="$DRYRUN"
+
 if dryrun; then
   echo '( DRY RUN -- skipping lock )'
 else
@@ -55,17 +58,14 @@ fi
 
 get_status
 
-if  [ -n "$status_must_be"] && \
+if  [ -n "$status_must_be" ] && \
     [[ "$srvbak_status" != $status_must_be ]]; then
   die "STATUS is $srvbak_status (!= $status_must_be)"
 fi
-if  [ -n "$status_must_not_be"] && \
+if  [ -n "$status_must_not_be" ] && \
     [[ "$srvbak_status" == $status_must_not_be ]]; then
   die "STATUS is $srvbak_status (== $status_must_not_be)"
 fi
-
-if [[ "$VERBOSE" == [Yy]* ]]; then verbose=-v; else verbose=; fi
-export VERBOSE ; dryrun="$DRYRUN"
 
 function atexit ()
 {
