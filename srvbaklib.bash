@@ -4,7 +4,7 @@
 #
 # File        : srvbaklib.bash
 # Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-# Date        : 2013-05-27
+# Date        : 2013-05-30
 #
 # Copyright   : Copyright (C) 2013  Felix C. Stegerman
 # Licence     : GPLv2
@@ -30,9 +30,9 @@ export LC_COLLATE=C
 # Usage: die <msg(s)>
 function die () { echo "$@" >&2; exit 1; }
 
-# Usage: pipe_ckh [<msg(s)>]
+# Usage: pipe_chk [<msg(s)>]
 # Checks ${PIPESTATUS[@]} and dies if any are non-zero.
-function pipe_ckh ()
+function pipe_chk ()
 {                                                               # {{{1
   local ps=( "${PIPESTATUS[@]}" ) x
   for x in "${ps[@]}"; do
@@ -141,7 +141,7 @@ function canonpath ()
 # Uses canonpath.
 function hashpath ()
 { printf '%s' "$( canonpath "$1" )" | sha1sum | awk '{print $1}'
-  pipe_ckh; }
+  pipe_chk; }
 
 # --
 
@@ -206,18 +206,18 @@ function ls_backups ()
   if dryrun && [ ! -e "$dir" ]; then
     echo "( ls_backups: DRY RUN and \`$dir' does not exist )" >&2
   else
-    ls "$dir" | grep0 -E '^[0-9]{4}-'; pipe_ckh
+    ls "$dir" | grep0 -E '^[0-9]{4}-'; pipe_chk
   fi
 }                                                               # }}}1
 
 # Usage: last_backup <dir>
 # Uses ls_backups.
-function last_backup () { ls_backups "$1" | tail -n 1; pipe_ckh; }
+function last_backup () { ls_backups "$1" | tail -n 1; pipe_chk; }
 
 # Usage: obsolete_backups <dir>
 # Uses: $keep_last, ls_backups.
 function obsolete_backups ()
-{ ls_backups "$1" | head -n -"$keep_last"; pipe_ckh; }
+{ ls_backups "$1" | head -n -"$keep_last"; pipe_chk; }
 
 # Usage: cp_last_backup <dir> <path>
 # Copies last backup in <dir> (if one exists) to <path> using hard
@@ -270,7 +270,7 @@ function tar_gpg ()                                             # {{{1
   local tar=( tar c --anchored "$@" ) gpg ; set_gpg
 
   run_hdr "${tar[@]} | ${gpg[@]} > $out"
-  dryrun || { "${tar[@]}" | "${gpg[@]}" > "$out"; pipe_ckh; }
+  dryrun || { "${tar[@]}" | "${gpg[@]}" > "$out"; pipe_chk; }
   run_ftr
 }                                                               # }}}1
 
