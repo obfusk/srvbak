@@ -2,7 +2,7 @@
 
     File        : README.md
     Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-    Date        : 2013-05-28
+    Date        : 2013-05-30
 
     Copyright   : Copyright (C) 2013  Felix C. Stegerman
     Version     : 0.2.0-dev
@@ -142,7 +142,7 @@
 
   Add the following line to /etc/crontab:
 
-    25 2 * * * root  cd / && run-parts --report /etc/cron.2am
+    5 2 * * * root  cd / && run-parts --report /etc/cron.2am
 
   And:
 
