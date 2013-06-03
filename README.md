@@ -2,7 +2,7 @@
 
     File        : README.md
     Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-    Date        : 2013-05-30
+    Date        : 2013-06-03
 
     Copyright   : Copyright (C) 2013  Felix C. Stegerman
     Version     : 0.2.0-dev
@@ -140,13 +140,8 @@
 
 ### or with e.g. cron.2am
 
-  Add the following line to /etc/crontab:
-
-    5 2 * * * root  cd / && run-parts --report /etc/cron.2am
-
-  And:
-
     $ mkdir -p /etc/cron.2am
+    $ cp -i /opt/src/srvbak/crontab.2am.sample /etc/cron.d/2am
 
   Then:
 
