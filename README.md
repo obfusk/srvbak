@@ -30,6 +30,8 @@
 
   See \*.sample for (annotated) configuration examples.
 
+  If you want to know how files are organized, see tree.sample.
+
   To use baktogit [2] to back up configuration files, set it up (with
   a repository not in srvbak's directory), then configure srvbak to
   use it.
