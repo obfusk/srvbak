@@ -4,7 +4,7 @@
 #
 # File        : srvbak.bash
 # Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-# Date        : 2013-05-27
+# Date        : 2013-06-03
 #
 # Copyright   : Copyright (C) 2013  Felix C. Stegerman
 # Licence     : GPLv2
@@ -56,28 +56,30 @@ else
   run mkdir -p "$base_dir/.var" ; lock="$base_dir/.var/lock"
 fi
 
-get_status
-
-if  [ -n "$status_must_be" ] && \
-    [[ "$srvbak_status" != $status_must_be ]]; then
-  die "STATUS is $srvbak_status (!= $status_must_be)"
-fi
-if  [ -n "$status_must_not_be" ] && \
-    [[ "$srvbak_status" == $status_must_not_be ]]; then
-  die "STATUS is $srvbak_status (== $status_must_not_be)"
-fi
+function unlock () { dryrun || run rm -f "$lock"; }
 
 function atexit ()
 {
-  dryrun || run rm -f "$lock"
+  unlock
   if [[ "$srvbak_status" != ok* ]]; then set_error; echo ERROR; fi
   echo
 }
 
 if ! dryrun; then
   run_hdr "[lock] $lock"
-  lock "$lock" || die LOCKED
+  lock "$lock" || die LOCKED ; trap unlock 0
   run_ftr
+fi
+
+get_status ; s="$srvbak_status"
+
+if  [ -n "$status_must_be" ] && \
+    [[ "$s" != $status_must_be ]]; then
+  die "STATUS is $s (!= $status_must_be)"
+fi
+if  [ -n "$status_must_not_be" ] && \
+    [[ "$s" == $status_must_not_be ]]; then
+  die "STATUS is $s (== $status_must_not_be)"
 fi
 
 set_running ; trap atexit 0

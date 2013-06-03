@@ -1,0 +1,116 @@
+/some
+|-- dir
+|   |-- not
+|   |   `-- this
+|   |       `-- file
+|   `-- yes
+|       `-- this
+|           `-- file
+|-- dir1
+|   |-- not
+|   `-- yes
+|-- dir2
+|   |-- a
+|   |   `-- y.bar
+|   |-- b
+|   |   `-- z.bar
+|   |-- c
+|   |   `-- y.foo
+|   |-- x.bar
+|   `-- z.foo
+`-- dir3
+    |-- 1.skip
+    |-- a
+    |   `-- 2.skip
+    `-- b
+        `-- 3.skip
+/__data
+|-- baktogit
+|   `-- repo
+|       |-- etc
+|       |   |-- ...
+|       `-- some
+|           `-- dir
+|               |-- not
+|               |   `-- this
+|               `-- yes
+|                   `-- this
+|                       `-- file
+|-- files
+|   |-- a
+|   |   |-- 1
+|   |   `-- 2
+|   |-- b
+|   |   |-- 3
+|   |   `-- 99
+|   `-- c
+|       `-- 4
+`-- srvbak
+    |-- baktogit
+    |   `-- 2013-06-03T12:04:07.tar.gpg
+    |-- data
+    |   |-- hash
+    |   |   |-- 7282440ae0bb101afb313ef5db7243d8444d42f5
+    |   |   |   `-- 2013-06-03T12:04:07
+    |   |   |       |-- a
+    |   |   |       |   |-- 1
+    |   |   |       |   `-- 2
+    |   |   |       |-- b
+    |   |   |       |   |-- 3
+    |   |   |       |   `-- 99
+    |   |   |       `-- c
+    |   |   |           `-- 4
+    |   |   |-- cfe72ed48c275d5c3bac906b29d7f4813aa4231b
+    |   |   |   `-- 2013-06-03T12:04:07
+    |   |   |       |-- a
+    |   |   |       |   `-- y.bar
+    |   |   |       |-- b
+    |   |   |       |   `-- z.bar
+    |   |   |       `-- c
+    |   |   `-- db194f4a2178ebc470ebdf16f19874b47d248da4
+    |   |       `-- 2013-06-03T12:04:07
+    |   |           `-- yes
+    |   |-- info
+    |   |   |-- 7282440ae0bb101afb313ef5db7243d8444d42f5.path
+    |   |   |-- cfe72ed48c275d5c3bac906b29d7f4813aa4231b.path
+    |   |   `-- db194f4a2178ebc470ebdf16f19874b47d248da4.path
+    |   |-- list
+    |   |   |-- 7282440ae0bb101afb313ef5db7243d8444d42f5
+    |   |   |   `-- 2013-06-03T12:04:07
+    |   |   |-- cfe72ed48c275d5c3bac906b29d7f4813aa4231b
+    |   |   |   `-- 2013-06-03T12:04:07
+    |   |   `-- db194f4a2178ebc470ebdf16f19874b47d248da4
+    |   |       `-- 2013-06-03T12:04:07
+    |   `-- path
+    |       |-- __data
+    |       |   `-- files -> /__data/srvbak/data/hash/7282440ae0bb101afb313ef5db7243d8444d42f5
+    |       `-- some
+    |           |-- dir1 -> /__data/srvbak/data/hash/db194f4a2178ebc470ebdf16f19874b47d248da4
+    |           `-- dir2 -> /__data/srvbak/data/hash/cfe72ed48c275d5c3bac906b29d7f4813aa4231b
+    |-- dpkg
+    |   `-- 2013-06-03T12:04:07
+    |-- mongodb
+    |   |-- mongo1
+    |   |   `-- 2013-06-03T12:04:07.tar.gpg
+    |   `-- mongo2
+    |       `-- 2013-06-03T12:04:07.tar.gpg
+    |-- postgresql
+    |   |-- pg1
+    |   |   `-- 2013-06-03T12:04:07.sql.gpg
+    |   `-- pg2
+    |       `-- 2013-06-03T12:04:07.sql.gpg
+    |-- sensitive_data
+    |   |-- hash
+    |   |   |-- c0bc6f00fb44f015c1ed113e5bb202fd0597bec2
+    |   |   |   `-- 2013-06-03T12:04:07.tar.gpg
+    |   |   `-- cc2984c87f63996ec6a40031920a8915ab7610d4
+    |   |       `-- 2013-06-03T12:04:07.tar.gpg
+    |   |-- info
+    |   |   |-- c0bc6f00fb44f015c1ed113e5bb202fd0597bec2.path
+    |   |   `-- cc2984c87f63996ec6a40031920a8915ab7610d4.path
+    |   `-- path
+    |       |-- etc -> /__data/srvbak/sensitive_data/hash/c0bc6f00fb44f015c1ed113e5bb202fd0597bec2
+    |       `-- some
+    |           `-- dir3 -> /__data/srvbak/sensitive_data/hash/cc2984c87f63996ec6a40031920a8915ab7610d4
+    `-- .var
+        `-- status

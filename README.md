@@ -84,6 +84,13 @@
   concurrent backups; you can create+rm this lock file yourself when
   e.g. copying backups elsewhere.
 
+  A status file (`$base_dir/.var/status`) is used to log the status of
+  the current/last run.  It is not written until just before the
+  actual backup begins -- after the configuration file has been
+  processed, the lock file is created, and the previous status is
+  checked.  For more information on the (contents of the) status file,
+  see `srvbakrc.sample`.
+
 []: }}}1
 
 ## Install and Configure
