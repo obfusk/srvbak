@@ -17,6 +17,7 @@
 
   * options to not use gpg for databases ?!
   * sign/hash?
+  * relative path/hash links?
 
 ## Description
 []: {{{1
