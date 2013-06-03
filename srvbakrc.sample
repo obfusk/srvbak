@@ -32,6 +32,9 @@ status_must_be='ok*'
 
 # --
 
+# NB: because baktogit uses git, only the last 2 baktogit backups are
+# kept; use e.g. baktogit_keep_last=5 to change this.
+
 export BAKTOGIT_REPO=/__data/baktogit/repo BAKTOGIT_PUSH=no
                                     # NB: repo not in $base_dir!
 baktogit=/opt/src/baktogit/baktogit.bash
