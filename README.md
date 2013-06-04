@@ -5,14 +5,11 @@
     Date        : 2013-06-04
 
     Copyright   : Copyright (C) 2013  Felix C. Stegerman
-    Version     : 0.2.0-dev
+    Version     : 0.4.0
 
 []: }}}1
 
 ## TODO
-
-  * review! + test!
-
 ### Maybe
 
   * options to not use gpg for databases ?!
