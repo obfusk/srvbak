@@ -283,12 +283,12 @@ function process_mongo_passfile ()
   [ -e "$mongo_passfile" ] || \
     die "bad mongo_passfile: $mongo_passfile"
 
-  local oldifs="$IFS" db_ db user pass ; IFS=:
-  while read -r db_ user pass; do
-    [[ "$db_" =~ ^[A-Za-z0-9_-]+$ ]] || die 'invalid mongo db name'
-    db="${db_//-/__DASH__}"
-    eval "mongo_auth__${db}__user=\$user"
-    eval "mongo_auth__${db}__pass=\$pass"
+  local oldifs="$IFS" db db_ user pass ; IFS=:
+  while read -r db user pass; do
+    [[ "$db" =~ ^[A-Za-z0-9_-]+$ ]] || die 'invalid mongo db name'
+    db_="${db//-/__DASH__}"
+    eval "mongo_auth__${db_}__user=\$user"
+    eval "mongo_auth__${db_}__pass=\$pass"
   done < "$mongo_passfile" ; IFS="$oldifs"
 }                                                               # }}}1
 
@@ -406,17 +406,17 @@ function mongo_backup ()
 {                                                               # {{{1
   [ -n "$mongo_host" ] || die 'empty $mongo_host'
 
-  local dbname_="$1" dbname user pass
+  local dbname="$1" dbname_ user pass
   local dir="$base_dir/mongodb/$dbname"
   local temp="$( mktemp_dry -d )" ; local tsub="$dbname/$date"
   local dump="$dir/$date".tar.gpg
 
-  [[ "$dbname_" =~ ^[A-Za-z0-9_-]+$ ]] || die 'invalid mongo db name'
-  dbname="${dbname_//-/__DASH__}"
-  eval "user=\$mongo_auth__${dbname}__user"
-  eval "pass=\$mongo_auth__${dbname}__pass"
-  [ -n "$user" ] || die "empty \$mongo_auth__${dbname}__user"
-  [ -n "$pass" ] || die "empty \$mongo_auth__${dbname}__pass"
+  [[ "$dbname" =~ ^[A-Za-z0-9_-]+$ ]] || die 'invalid mongo db name'
+  dbname_="${dbname//-/__DASH__}"
+  eval "user=\$mongo_auth__${dbname_}__user"
+  eval "pass=\$mongo_auth__${dbname_}__pass"
+  [ -n "$user" ] || die "empty \$mongo_auth__${dbname_}__user"
+  [ -n "$pass" ] || die "empty \$mongo_auth__${dbname_}__pass"
 
   run mkdir -p "$dir" "$temp/$tsub"
   printf '%s\n' "$pass" | run mongodump -h "$mongo_host" \
