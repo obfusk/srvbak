@@ -4,7 +4,7 @@
 #
 # File        : srvbaklib.bash
 # Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-# Date        : 2013-05-30
+# Date        : 2013-06-04
 #
 # Copyright   : Copyright (C) 2013  Felix C. Stegerman
 # Licence     : GPLv2
@@ -283,9 +283,10 @@ function process_mongo_passfile ()
   [ -e "$mongo_passfile" ] || \
     die "bad mongo_passfile: $mongo_passfile"
 
-  local oldifs="$IFS" db user pass ; IFS=:
-  while read -r db user pass; do
-    [[ "$db" =~ ^[A-Za-z0-9]+$ ]] || die 'invalid mongo db name'
+  local oldifs="$IFS" db_ db user pass ; IFS=:
+  while read -r db_ user pass; do
+    [[ "$db_" =~ ^[A-Za-z0-9_-]+$ ]] || die 'invalid mongo db name'
+    db="${db_//-/__DASH__}"
     eval "mongo_auth__${db}__user=\$user"
     eval "mongo_auth__${db}__pass=\$pass"
   done < "$mongo_passfile" ; IFS="$oldifs"
@@ -405,12 +406,13 @@ function mongo_backup ()
 {                                                               # {{{1
   [ -n "$mongo_host" ] || die 'empty $mongo_host'
 
-  local dbname="$1" user pass
+  local dbname_="$1" dbname user pass
   local dir="$base_dir/mongodb/$dbname"
   local temp="$( mktemp_dry -d )" ; local tsub="$dbname/$date"
   local dump="$dir/$date".tar.gpg
 
-  [[ "$dbname" =~ ^[A-Za-z0-9]+$ ]] || die 'invalid mongo db name'
+  [[ "$dbname_" =~ ^[A-Za-z0-9_-]+$ ]] || die 'invalid mongo db name'
+  dbname="${dbname_//-/__DASH__}"
   eval "user=\$mongo_auth__${dbname}__user"
   eval "pass=\$mongo_auth__${dbname}__pass"
   [ -n "$user" ] || die "empty \$mongo_auth__${dbname}__user"

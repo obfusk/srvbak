@@ -5,7 +5,7 @@
     Date        : 2013-06-04
 
     Copyright   : Copyright (C) 2013  Felix C. Stegerman
-    Version     : 0.4.0
+    Version     : 0.4.1
 
 []: }}}1
 
@@ -168,9 +168,8 @@
     $ gpg --gen-key           # create a gpg key pair on your computer
                               # the key id is something like 1AA35570
     $ gpg -o 1AA35570.pub --export -a 1AA35570    # export public key
-    $ ssh user@server sudo -H gpg --import < 1AA35570.pub
-                              # import public key (for root@server)
 
+    root@server$ gpg --import < 1AA35570.pub      # import
     root@server$ gpg --list-keys          # should contain 1AA35570
     root@server$ gpg --edit-key 1AA35570  # trust ultimately
     gpg> trust
