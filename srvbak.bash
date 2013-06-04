@@ -4,7 +4,7 @@
 #
 # File        : srvbak.bash
 # Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-# Date        : 2013-06-03
+# Date        : 2013-06-04
 #
 # Copyright   : Copyright (C) 2013  Felix C. Stegerman
 # Licence     : GPLv2
@@ -23,7 +23,8 @@ echo "srvbak of $( hostname ) @ ${date/T/ }" ; echo
 
 # --
 
-before=() after=() base_dir= keep_last= gpg_opts=() gpg_key=
+before=() after=() finally=() base_dir= keep_last=
+gpg_opts=() gpg_key=
 chown_to= chgrp_to= chmod_dirs= chmod_files=
 srvbak_status= status_must_be= status_must_not_be=
 baktogit= baktogit_items=() baktogit_keep_last=2
@@ -59,11 +60,17 @@ fi
 function unlock () { dryrun || run rm -f "$lock"; }
 
 function atexit ()
-{
+{                                                               # {{{1
+  set +e
+  run_multi "${finally[@]}"
   unlock
-  if [[ "$srvbak_status" != ok* ]]; then set_error; echo ERROR; fi
+  if [[ "$srvbak_status" == ok* ]]; then
+    echo OK
+  else
+    set_error; echo ERROR
+  fi
   echo
-}
+}                                                               # }}}1
 
 if ! dryrun; then
   run_hdr "[lock] $lock"
@@ -129,6 +136,6 @@ fi
 # 9. after
 run_multi "${after[@]}"
 
-set_ok ; echo OK
+set_ok
 
 # vim: set tw=70 sw=2 sts=2 et fdm=marker :

@@ -3,8 +3,10 @@
 # DRYRUN=yes                        # set in ENV
 : ${VERBOSE:=yes}                   # override in ENV
 
-before=( 'service nap stop'  )      # commands to run before
- after=( 'service nap start' )      # commands to run after
+ before=( 'service nap stop'  )     # commands to run before
+  after=()                          # commands to run after
+finally=( 'service nap start' )     # commands to run after, even on
+                                    # failure
 
 base_dir=/__data/srvbak             # backups in subdirs
 keep_last=14                        # keep last 14 backups

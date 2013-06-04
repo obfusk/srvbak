@@ -2,7 +2,7 @@
 
     File        : README.md
     Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-    Date        : 2013-06-03
+    Date        : 2013-06-04
 
     Copyright   : Copyright (C) 2013  Felix C. Stegerman
     Version     : 0.2.0-dev
@@ -77,9 +77,13 @@
   6. mongodb w/ mongodump + tar + gpg
   7. dpkg selections
   8. fix permissions (chown/chgrp/chmod)
-  9. commands to run after (e.g. start services)
+  9. commands to run after
 
 #
+
+  You can also specify commands to run after, even on failure; e.g.
+  to (re)start services; they are run if all goes well, or an error
+  occurs after the actual backup (i.e. step 1) has begun.
 
   Each step is optional.
 
