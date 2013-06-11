@@ -5,7 +5,7 @@
     Date        : 2013-06-04
 
     Copyright   : Copyright (C) 2013  Felix C. Stegerman
-    Version     : 0.4.3
+    Version     : 0.4.4
 
 []: }}}1
 
@@ -159,6 +159,17 @@
     $ cp -i /opt/src/srvbak/srvbak.cron.sample /etc/cron.2am/srvbak
     $ vim /etc/cron.2am/srvbak
     $ chmod +x /etc/cron.2am/srvbak
+
+[]: }}}1
+
+## Logrotate
+[]: {{{1
+
+  If you (use the cron job to) write to e.g. `/var/log/srvbak.log`,
+  you may want to use logrotate.
+
+    $ cp -i /opt/src/srvbak/srvbak.logrotate.sample \
+      /etc/logrotate.d/srvbak
 
 []: }}}1
 
