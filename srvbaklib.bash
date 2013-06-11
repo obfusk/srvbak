@@ -149,37 +149,35 @@ function hashpath ()
 # Chowns $base_dir and, recursively, $base_dir/*/.
 function chown_to ()
 {                                                               # {{{1
-  local user="$1"
-  run chown             "$user" "$base_dir"
-  run chown $verbose -R "$user" "$base_dir"/*/
+  local user="$1" v="${verbose:+-c}"
+  run chown       "$user" "$base_dir"
+  run chown $v -R "$user" "$base_dir"/*/
 }                                                               # }}}1
 
 # Usage: chgrp_to <group>
 # Chgrps $base_dir and, recursively, $base_dir/*/**.
 function chgrp_to ()
 {                                                               # {{{1
-  local group="$1"
-  run chgrp             "$group" "$base_dir"
-  run chgrp $verbose -R "$group" "$base_dir"/*/
+  local group="$1" v="${verbose:+-c}"
+  run chgrp       "$group" "$base_dir"
+  run chgrp $v -R "$group" "$base_dir"/*/
 }                                                               # }}}1
 
 # Usage: chmod_dirs <mode>
 # Chmods $base_dir and dirs in $base_dir/*/.
 function chmod_dirs ()
 {                                                               # {{{1
-  local mode="$1"
+  local mode="$1" v="${verbose:+-c}"
   run chmod "$mode" "$base_dir"
-  run find "$base_dir"/*/ -type d -execdir \
-    chmod $verbose "$mode" {} \;
+  run find "$base_dir"/*/ -type d -execdir chmod $v "$mode" {} \;
 }                                                               # }}}1
 
 # Usage: chmod_files <mode>
 # Chmods files in $base_dir/*/.
 function chmod_files ()
 {                                                               # {{{1
-  local mode="$1"
-  run find "$base_dir"/*/ -type f -execdir \
-    chmod $verbose "$mode" {} \;
+  local mode="$1" v="${verbose:+-c}"
+  run find "$base_dir"/*/ -type f -execdir chmod $v "$mode" {} \;
 }                                                               # }}}1
 
 # Usage: original_files_info <path> <to>
