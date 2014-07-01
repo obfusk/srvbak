@@ -2,7 +2,7 @@
 
     File        : README.md
     Maintainer  : Felix C. Stegerman <flx@obfusk.net>
-    Date        : 2013-06-04
+    Date        : 2014-07-01
 
     Copyright   : Copyright (C) 2013  Felix C. Stegerman
     Version     : 0.4.4
@@ -101,7 +101,7 @@
 []: {{{1
 
     $ mkdir -p /opt/src
-    $ git clone https://github.com/noxqsgit/srvbak.git /opt/src/srvbak
+    $ git clone https://github.com/obfusk/srvbak.git /opt/src/srvbak
     $ cp -i /opt/src/srvbak/srvbakrc{.sample,}
     $ vim /opt/src/srvbak/srvbakrc
 
@@ -207,13 +207,13 @@
   --- http://www.opensource.org/licenses/GPL-2.0
 
   [2] baktogit
-  --- https://github.com/noxqsgit/baktogit
+  --- https://github.com/obfusk/baktogit
 
   [3] mailer
-  --- https://github.com/noxqsgit/mailer
+  --- https://github.com/obfusk/mailer
 
   [4] cpbak
-  --- https://github.com/noxqsgit/cpbak
+  --- https://github.com/obfusk/cpbak
 
 []: }}}1
 
